@@ -519,7 +519,8 @@
         const SUPABASE_URL = 'https://vxpgiedokvkbtcfpbbay.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4cGdpZWRva3ZrYnRjZnBiYmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNjIzNTgsImV4cCI6MjA4NTYzODM1OH0.UPs_SaVUcDDRCV-ofMoWyE7WJAkyLK7ac24SWJ52tjM';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Use different variable name to avoid conflict
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // State
         let books = [];
@@ -558,7 +559,7 @@
         
         async function loadBooks() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('books')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -575,7 +576,7 @@
         }
         
         function setupRealtimeSubscription() {
-            supabase
+            supabaseClient
                 .channel('books')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, payload => {
                     console.log('Real-time update:', payload);
@@ -605,7 +606,7 @@
             };
             
             try {
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('books')
                     .insert([book])
                     .select();
@@ -725,7 +726,7 @@
             if (!confirm('Yakin ingin menghapus buku ini?')) return;
             
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('books')
                     .delete()
                     .eq('id', bookId);
@@ -852,7 +853,7 @@
                     }
                     
                     if (newBooks.length > 0) {
-                        const { error } = await supabase
+                        const { error } = await supabaseClient
                             .from('books')
                             .insert(newBooks);
                         
