@@ -616,12 +616,18 @@
         });
         
         async function checkAuth() {
+            console.log('🔍 Checking authentication...');
+            
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                console.log('📦 Session data:', session);
+                console.log('❌ Session error:', error);
                 
                 if (error) throw error;
                 
                 if (session) {
+                    console.log('✅ Session found! User:', session.user.email);
                     currentUser = session.user;
                     showMainApp();
                     await loadBooks();
@@ -638,10 +644,11 @@
                         isOnline = false;
                     });
                 } else {
+                    console.log('❌ No session found, showing login page');
                     showLoginPage();
                 }
             } catch (error) {
-                console.error('Auth check error:', error);
+                console.error('💥 Auth check error:', error);
                 showLoginPage();
             }
         }
@@ -664,17 +671,34 @@
             const loginBtn = document.getElementById('loginBtn');
             const errorMsg = document.getElementById('loginError');
             
+            console.log('🔐 Login attempt:', email);
+            
             loginBtn.disabled = true;
             loginBtn.innerHTML = '<div class="spinner mx-auto"></div>';
             errorMsg.classList.add('hidden');
             
             try {
+                console.log('📡 Calling Supabase signInWithPassword...');
+                
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
                 
-                if (error) throw error;
+                console.log('📦 Response data:', data);
+                console.log('❌ Response error:', error);
+                
+                if (error) {
+                    console.error('🚫 Login failed:', error);
+                    throw error;
+                }
+                
+                if (!data.user) {
+                    console.error('🚫 No user in response');
+                    throw new Error('Login gagal: Tidak ada data user');
+                }
+                
+                console.log('✅ Login success! User:', data.user.email);
                 
                 currentUser = data.user;
                 showMainApp();
@@ -693,11 +717,22 @@
                 });
                 
             } catch (error) {
-                console.error('Login error:', error);
-                errorMsg.textContent = error.message === 'Invalid login credentials' 
-                    ? 'Email atau password salah' 
-                    : 'Gagal login: ' + error.message;
+                console.error('💥 Login error caught:', error);
+                
+                let errorMessage = 'Gagal login';
+                
+                if (error.message === 'Invalid login credentials') {
+                    errorMessage = 'Email atau password salah';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'Email belum dikonfirmasi. Silakan cek email Anda.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                errorMsg.textContent = errorMessage;
                 errorMsg.classList.remove('hidden');
+                
+                console.log('📝 Showing error:', errorMessage);
             } finally {
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<span>Masuk</span>';
