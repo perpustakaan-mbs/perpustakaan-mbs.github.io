@@ -656,6 +656,16 @@
         function showLoginPage() {
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
+            
+            // Setup login form listener
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.removeEventListener('submit', handleLogin); // Remove old listener
+                loginForm.addEventListener('submit', handleLogin); // Add new listener
+                console.log('✅ Login form listener attached');
+            } else {
+                console.error('❌ Login form not found!');
+            }
         }
         
         function showMainApp() {
@@ -759,12 +769,6 @@
             document.getElementById('filterCategory').addEventListener('change', renderBooks);
             document.getElementById('schoolName').addEventListener('input', updateLabelSchoolName);
             document.getElementById('bookForm').addEventListener('submit', handleFormSubmit);
-            
-            // Login form listener
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', handleLogin);
-            }
         }
         
         async function loadBooks() {
