@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="theme-color" content="#1e40af">
-    <meta name="description" content="Sistem Manajemen Perpustakaan Sekolah">
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUGVycHVzdGFrYWFuIFNla29sYWgiLCJzaG9ydF9uYW1lIjoiUGVycHVzdGFrYWFuIiwiZGVzY3JpcHRpb24iOiJTaXN0ZW0gTWFuYWplbWVuIEJ1a3UiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMxZTQwYWYiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyB2aWV3Qm94PScwIDAgMTkyIDE5MicgZmlsbD0nbm9uZSclM0UlM0NyZWN0IHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyBmaWxsPSclMjMxZTQwYWYnLyUzRSUzQ3BhdGggZD0nTTk2IDQ4Yy0yNi41MSAwLTQ4IDIxLjQ5LTQ4IDQ4djQ4aDk2Vjk2YzAtMjYuNTEtMjEuNDktNDgtNDgtNDh6bTAgMGMtMjYuNTEgMC00OC0yMS40OS00OC00OEg0OGMwIDI2LjUxIDIxLjQ5IDQ4IDQ4IDQ4eicgc3Ryb2tlPSclMjNmZmYnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8lM0UlM0Mvc3ZnJTNFIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6IjE5MngxOTIifV19">
-    <title>Perpustakaan Sekolah</title>
+    <title>Perpustakaan Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -20,136 +17,47 @@
             -webkit-tap-highlight-color: transparent;
         }
         
-        .mono {
-            font-family: 'JetBrains Mono', 'Courier New', monospace;
-        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
         
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .animate-slideUp { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+        .animate-scaleIn { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         
-        .animate-slideUp {
-            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        .animate-fadeIn {
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        
-        /* Mobile bottom nav fixed */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-            z-index: 50;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        
-        /* Content padding untuk mobile */
-        .content-wrapper {
-            padding-bottom: calc(80px + env(safe-area-inset-bottom));
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 50; padding-bottom: env(safe-area-inset-bottom); }
+        .content-wrapper { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
         
         @media (min-width: 768px) {
-            .bottom-nav {
-                display: none;
-            }
-            .content-wrapper {
-                padding-bottom: 0;
-            }
+            .bottom-nav { display: none; }
+            .content-wrapper { padding-bottom: 0; }
         }
         
-        /* Loading spinner */
-        .spinner {
-            border: 2px solid #f3f4f6;
-            border-top: 2px solid #3b82f6;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 0.8s linear infinite;
-        }
+        .spinner { border: 2px solid #f3f4f6; border-top: 2px solid #3b82f6; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .toast { position: fixed; bottom: calc(80px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); z-index: 100; }
+        @media (min-width: 768px) { .toast { bottom: 20px; } }
         
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: calc(80px + env(safe-area-inset-bottom));
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-        }
-        
-        @media (min-width: 768px) {
-            .toast {
-                bottom: 20px;
-            }
-        }
-        
-        /* Print styles */
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printArea, #printArea * {
-                visibility: visible;
-            }
-            #printArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-            .no-print {
-                display: none !important;
-            }
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
         }
         
-        /* Touch feedback */
-        .btn-touch {
-            transition: all 0.15s ease;
-        }
+        .btn-touch { transition: all 0.15s ease; }
+        .btn-touch:active { transform: scale(0.95); }
+        .modal-backdrop { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); }
         
-        .btn-touch:active {
-            transform: scale(0.95);
-        }
+        .checkbox-item { cursor: pointer; user-select: none; }
+        .checkbox-item:hover { background: #f8fafc; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -160,330 +68,333 @@
             <div class="text-center mb-8 animate-slideUp">
                 <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-xl mb-4">
                     <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none">
-                        <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/>
+                        <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2"/>
+                        <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
                     </svg>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Perpustakaan</h1>
-                <p class="text-gray-600">Masuk untuk melanjutkan</p>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Perpustakaan Pro</h1>
+                <p class="text-gray-600">Sistem Manajemen Buku Profesional</p>
             </div>
             
             <div class="bg-white rounded-2xl shadow-xl p-8 animate-slideUp" style="animation-delay: 0.1s;">
                 <form id="loginForm" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
-                        <input 
-                            type="email" 
-                            id="loginEmail" 
-                            required 
-                            placeholder="admin@perpus.local"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm"
-                        >
+                        <input type="email" id="loginEmail" required placeholder="admin@perpus.local" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
                     </div>
                     
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                        <input 
-                            type="password" 
-                            id="loginPassword" 
-                            required 
-                            placeholder="••••••••"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm"
-                        >
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
                     </div>
                     
                     <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"></div>
                     
-                    <button 
-                        type="submit" 
-                        id="loginBtn"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
-                    >
+                    <button type="submit" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center">
                         <span>Masuk</span>
                     </button>
                 </form>
-                
-                <div class="mt-6 text-center text-xs text-gray-500">
-                    Sistem Manajemen Perpustakaan Sekolah
-                </div>
             </div>
         </div>
     </div>
     
-    <!-- Main App (Protected) -->
+    <!-- Main App -->
     <div id="mainApp" class="hidden">
-    
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg">
-                        <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none">
-                            <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/>
-                        </svg>
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-gradient-to-br from-blue-600 to-blue-700 p-2.5 rounded-xl shadow-lg">
+                            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none">
+                                <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2"/>
+                                <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-lg md:text-xl font-semibold text-gray-900">Perpustakaan Pro</h1>
+                            <p class="text-xs text-gray-500 hidden md:block">Sistem Manajemen Profesional</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 class="text-lg md:text-xl font-semibold text-gray-900">Perpustakaan</h1>
-                        <p class="text-xs text-gray-500 hidden md:block">Sistem Manajemen Buku</p>
-                    </div>
-                </div>
-                
-                <div class="flex items-center space-x-2">
-                    <!-- Desktop Actions -->
+                    
                     <div class="hidden md:flex items-center space-x-2">
-                        <button onclick="exportToCSV()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center space-x-1.5">
+                        <button onclick="openSettings()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center space-x-1.5">
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                                <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 1v3m0 16v3M4.22 4.22l2.12 2.12m11.32 11.32l2.12 2.12M1 12h3m16 0h3M4.22 19.78l2.12-2.12m11.32-11.32l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
-                            <span>Export</span>
-                        </button>
-                        <button onclick="document.getElementById('importCSV').click()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center space-x-1.5">
-                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                                <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <span>Import</span>
+                            <span>Pengaturan</span>
                         </button>
                         <button onclick="handleLogout()" class="px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition flex items-center space-x-1.5">
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
-                                <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 14l5-5m0 0l-5-5m5 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                             <span>Keluar</span>
                         </button>
                     </div>
-                    <input type="file" id="importCSV" accept=".csv" onchange="importFromCSV(event)" class="hidden">
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-4 md:py-6 content-wrapper">
-        
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 animate-fadeIn">
-            <div class="bg-white rounded-xl p-4 border border-gray-200">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="bg-blue-50 p-2 rounded-lg">
-                        <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none">
-                            <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
-                        </svg>
-                    </div>
-                    <div id="booksLoader" class="spinner hidden"></div>
-                </div>
-                <p class="text-xs text-gray-600 mb-1">Total Buku</p>
-                <p id="totalBooks" class="text-2xl font-semibold text-gray-900">0</p>
-            </div>
+        <main class="max-w-7xl mx-auto px-4 py-4 md:py-6 content-wrapper">
             
-            <div class="bg-white rounded-xl p-4 border border-gray-200">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="bg-purple-50 p-2 rounded-lg">
-                        <svg class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none">
-                            <path d="M20.59 13.41L13.42 20.58C13.2343 20.766 13.0137 20.9135 12.7709 21.0141C12.5281 21.1148 12.2678 21.1666 12.005 21.1666C11.7422 21.1666 11.4819 21.1148 11.2391 21.0141C10.9963 20.9135 10.7757 20.766 10.59 20.58L2 12V2H12L20.59 10.59C20.9625 10.9647 21.1716 11.4716 21.1716 12C21.1716 12.5284 20.9625 13.0353 20.59 13.41Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/>
-                            <path d="M7 7H7.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+            <!-- Stats & Batch Actions -->
+            <div class="mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4 animate-fadeIn">
+                    <div class="bg-white rounded-xl p-4 border border-gray-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="bg-blue-50 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-1">Total Buku</p>
+                        <p id="totalBooks" class="text-2xl font-semibold text-gray-900">0</p>
                     </div>
-                </div>
-                <p class="text-xs text-gray-600 mb-1">Kategori</p>
-                <p id="totalCategories" class="text-2xl font-semibold text-gray-900">0</p>
-            </div>
-            
-            <div class="bg-white rounded-xl p-4 border border-gray-200">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="bg-green-50 p-2 rounded-lg">
-                        <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none">
-                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
-                            <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-600 mb-1">Bulan Ini</p>
-                <p id="booksThisMonth" class="text-2xl font-semibold text-gray-900">0</p>
-            </div>
-            
-            <div class="bg-white rounded-xl p-4 border border-gray-200">
-                <div class="flex items-center justify-between mb-2">
-                    <div class="bg-orange-50 p-2 rounded-lg">
-                        <svg class="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 9V2H18V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M6 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V11C2 10.4696 2.21071 9.96086 2.58579 9.58579C2.96086 9.21071 3.46957 9 4 9H20C20.5304 9 21.0391 9.21071 21.4142 9.58579C21.7893 9.96086 22 10.4696 22 11V16C22 16.5304 21.7893 17.0391 21.4142 17.4142C21.0391 17.7893 20.5304 18 20 18H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.1"/>
-                            <rect x="6" y="14" width="12" height="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-600 mb-1">Label</p>
-                <p id="labelCount" class="text-2xl font-semibold text-gray-900">0</p>
-            </div>
-        </div>
-
-        <!-- Mobile View Switcher -->
-        <div id="viewSwitcher" class="flex md:hidden bg-white rounded-xl border border-gray-200 p-1 mb-4">
-            <button onclick="switchView('list')" id="btnViewList" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white transition">
-                Daftar Buku
-            </button>
-            <button onclick="switchView('add')" id="btnViewAdd" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                Tambah Buku
-            </button>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <!-- Form Input Buku -->
-            <div id="formSection" class="md:col-span-1 hidden md:block animate-slideUp pb-20 md:pb-0">
-                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-blue-600" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
-                            <path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                        Tambah Buku
-                    </h2>
                     
-                    <form id="bookForm" class="space-y-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul *</label>
-                            <input type="text" id="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pengarang *</label>
-                            <input type="text" id="author" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Penerbit</label>
-                            <input type="text" id="publisher" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
-                                <input type="number" id="year" min="1900" max="2100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                                <input type="number" id="quantity" min="1" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">ISBN</label>
-                            <input type="text" id="isbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm mono">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori *</label>
-                            <select id="category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                                <option value="">Pilih Kategori</option>
-                                <option value="Fiksi">Fiksi</option>
-                                <option value="Non-Fiksi">Non-Fiksi</option>
-                                <option value="Sains">Sains</option>
-                                <option value="Matematika">Matematika</option>
-                                <option value="Sejarah">Sejarah</option>
-                                <option value="Bahasa">Bahasa</option>
-                                <option value="Agama">Agama</option>
-                                <option value="Teknologi">Teknologi</option>
-                                <option value="Seni">Seni</option>
-                                <option value="Biografi">Biografi</option>
-                                <option value="Referensi">Referensi</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Rak</label>
-                            <input type="text" id="location" placeholder="Contoh: A-12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                        </div>
-                        
-                        <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center space-x-2 btn-touch">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                                <path d="M19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16L21 8V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/>
-                                <path d="M17 21V13H7V21M7 3V8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <div class="bg-white rounded-xl p-4 border border-gray-200">
+                        <div class="bg-purple-50 p-2 rounded-lg mb-2 inline-block">
+                            <svg class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none">
+                                <path d="M20.59 13.41L13.42 20.58a2 2 0 01-2.83 0l-7-7A2 2 0 013 12V2h10a2 2 0 011.41.59l7 7a2 2 0 010 2.82z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                                <path d="M7 7h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                             </svg>
-                            <span>Simpan Buku</span>
-                        </button>
-                    </form>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-1">Kategori</p>
+                        <p id="totalCategories" class="text-2xl font-semibold text-gray-900">0</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-4 border border-gray-200">
+                        <div class="bg-green-50 p-2 rounded-lg mb-2 inline-block">
+                            <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none">
+                                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                                <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-1">Bulan Ini</p>
+                        <p id="booksThisMonth" class="text-2xl font-semibold text-gray-900">0</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-4 border border-gray-200">
+                        <div class="bg-orange-50 p-2 rounded-lg mb-2 inline-block">
+                            <svg class="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
+                                <rect x="6" y="14" width="12" height="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                            </svg>
+                        </div>
+                        <p class="text-xs text-gray-600 mb-1">Label Tercetak</p>
+                        <p id="labelCount" class="text-2xl font-semibold text-gray-900">0</p>
+                    </div>
+                </div>
+                
+                <!-- Batch Actions Bar -->
+                <div id="batchActionsBar" class="hidden bg-blue-50 border-2 border-blue-200 rounded-xl p-4 animate-slideUp">
+                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between space-y-3 md:space-y-0">
+                        <div class="flex items-center space-x-3">
+                            <div class="bg-blue-600 text-white w-10 h-10 rounded-lg flex items-center justify-center font-bold" id="selectedCount">0</div>
+                            <div>
+                                <p class="font-semibold text-gray-900">Buku Dipilih</p>
+                                <p class="text-sm text-gray-600">Pilih buku untuk batch print</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="batchPrintLabels()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition flex items-center space-x-2 btn-touch">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="6" y="14" width="12" height="8" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                <span>Cetak Label</span>
+                            </button>
+                            <button onclick="clearSelection()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium rounded-lg transition btn-touch">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Daftar Buku -->
-            <div id="listSection" class="md:col-span-2 animate-slideUp" style="animation-delay: 0.1s;">
-                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
-                    <div class="flex flex-col space-y-3 mb-4">
-                        <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+            <!-- Mobile View Switcher -->
+            <div id="viewSwitcher" class="flex md:hidden bg-white rounded-xl border border-gray-200 p-1 mb-4">
+                <button onclick="switchView('list')" id="btnViewList" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white transition">
+                    Daftar Buku
+                </button>
+                <button onclick="switchView('add')" id="btnViewAdd" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                    Tambah Buku
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Form Section -->
+                <div id="formSection" class="md:col-span-1 hidden md:block pb-20 md:pb-0">
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5 sticky top-20">
+                        <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                             <svg class="w-5 h-5 mr-2 text-blue-600" viewBox="0 0 24 24" fill="none">
-                                <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
-                                <path d="M8 7H16M8 12H16M8 17H12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
+                                <path d="M12 8v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                             </svg>
-                            Koleksi Buku
+                            <span id="formTitle">Tambah Buku</span>
                         </h2>
                         
-                        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
-                            <input type="text" id="searchInput" placeholder="Cari buku..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                        <form id="bookForm" class="space-y-3">
+                            <input type="hidden" id="editBookId">
                             
-                            <select id="filterCategory" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-                                <option value="">Semua Kategori</option>
-                                <option value="Fiksi">Fiksi</option>
-                                <option value="Non-Fiksi">Non-Fiksi</option>
-                                <option value="Sains">Sains</option>
-                                <option value="Matematika">Matematika</option>
-                                <option value="Sejarah">Sejarah</option>
-                                <option value="Bahasa">Bahasa</option>
-                                <option value="Agama">Agama</option>
-                                <option value="Teknologi">Teknologi</option>
-                                <option value="Seni">Seni</option>
-                                <option value="Biografi">Biografi</option>
-                                <option value="Referensi">Referensi</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Judul *</label>
+                                <input type="text" id="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Pengarang *</label>
+                                <input type="text" id="author" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Penerbit</label>
+                                <input type="text" id="publisher" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                                    <input type="number" id="year" min="1900" max="2100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
+                                    <input type="number" id="quantity" min="1" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">ISBN</label>
+                                <input type="text" id="isbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm mono">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Kategori *</label>
+                                <select id="category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="Fiksi">Fiksi</option>
+                                    <option value="Non-Fiksi">Non-Fiksi</option>
+                                    <option value="Sains">Sains</option>
+                                    <option value="Matematika">Matematika</option>
+                                    <option value="Sejarah">Sejarah</option>
+                                    <option value="Bahasa">Bahasa</option>
+                                    <option value="Agama">Agama</option>
+                                    <option value="Teknologi">Teknologi</option>
+                                    <option value="Seni">Seni</option>
+                                    <option value="Biografi">Biografi</option>
+                                    <option value="Referensi">Referensi</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Rak</label>
+                                <input type="text" id="location" placeholder="Contoh: A-12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                            </div>
+                            
+                            <div class="flex space-x-2 pt-2">
+                                <button type="submit" id="submitBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center space-x-2 btn-touch">
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                                        <path d="M17 21v-8H7v8M7 3v5h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span id="submitBtnText">Simpan Buku</span>
+                                </button>
+                                <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden px-4 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2.5 rounded-lg transition btn-touch">
+                                    Batal
+                                </button>
+                            </div>
+                        </form>
                     </div>
+                </div>
 
-                    <div id="booksList" class="space-y-3 max-h-[calc(100vh-400px)] md:max-h-[600px] overflow-y-auto">
-                        <div class="flex justify-center py-12">
-                            <div class="spinner" style="width: 40px; height: 40px;"></div>
+                <!-- Books List -->
+                <div id="listSection" class="md:col-span-2">
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
+                        <div class="flex flex-col space-y-3 mb-4">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-blue-600" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
+                                        <path d="M8 7h8M8 12h8M8 17h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Koleksi Buku
+                                </h2>
+                                <button onclick="toggleSelectMode()" id="selectModeBtn" class="hidden md:flex items-center space-x-2 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition">
+                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                        <rect x="14" y="14" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <span id="selectModeText">Pilih Banyak</span>
+                                </button>
+                            </div>
+                            
+                            <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                                <input type="text" id="searchInput" placeholder="Cari buku..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                                
+                                <select id="filterCategory" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                                    <option value="">Semua Kategori</option>
+                                    <option value="Fiksi">Fiksi</option>
+                                    <option value="Non-Fiksi">Non-Fiksi</option>
+                                    <option value="Sains">Sains</option>
+                                    <option value="Matematika">Matematika</option>
+                                    <option value="Sejarah">Sejarah</option>
+                                    <option value="Bahasa">Bahasa</option>
+                                    <option value="Agama">Agama</option>
+                                    <option value="Teknologi">Teknologi</option>
+                                    <option value="Seni">Seni</option>
+                                    <option value="Biografi">Biografi</option>
+                                    <option value="Referensi">Referensi</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="booksList" class="space-y-3 max-h-[calc(100vh-400px)] md:max-h-[600px] overflow-y-auto">
+                            <div class="flex justify-center py-12">
+                                <div class="spinner" style="width: 40px; height: 40px;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <!-- Bottom Navigation (Mobile) -->
-    <nav class="bottom-nav md:hidden">
-        <div class="flex justify-around items-center py-3 px-4">
-            <button onclick="switchView('list')" id="navList" class="flex flex-col items-center space-y-1 text-blue-600 btn-touch">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/>
-                    <path d="M7 9H17M7 12H17M7 15H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium">Daftar</span>
-            </button>
-            
-            <button onclick="switchView('add')" id="navAdd" class="flex flex-col items-center space-y-1 text-gray-400 btn-touch">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
-                    <path d="M12 8V16M8 12H16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span class="text-xs font-medium">Tambah</span>
-            </button>
-            
-            <button onclick="toggleMenu()" id="navMenu" class="flex flex-col items-center space-y-1 text-gray-400 btn-touch">
-                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
-                    <rect x="3" y="4" width="18" height="4" rx="1" fill="currentColor" fill-opacity="0.2"/>
-                    <rect x="3" y="10" width="18" height="4" rx="1" fill="currentColor" fill-opacity="0.2"/>
-                    <rect x="3" y="16" width="18" height="4" rx="1" fill="currentColor" fill-opacity="0.2"/>
-                </svg>
-                <span class="text-xs font-medium">Menu</span>
-            </button>
-        </div>
-    </nav>
+        <!-- Bottom Navigation (Mobile) -->
+        <nav class="bottom-nav md:hidden">
+            <div class="flex justify-around items-center py-3 px-4">
+                <button onclick="switchView('list')" id="navList" class="flex flex-col items-center space-y-1 text-blue-600 btn-touch">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/>
+                        <path d="M7 9h10M7 12h10M7 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="text-xs font-medium">Daftar</span>
+                </button>
+                
+                <button onclick="switchView('add')" id="navAdd" class="flex flex-col items-center space-y-1 text-gray-400 btn-touch">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
+                        <path d="M12 8v8m-4-4h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span class="text-xs font-medium">Tambah</span>
+                </button>
+                
+                <button onclick="toggleMenu()" id="navMenu" class="flex flex-col items-center space-y-1 text-gray-400 btn-touch">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="4" width="18" height="4" rx="1" fill="currentColor" fill-opacity="0.2"/>
+                        <rect x="3" y="10" width="18" height="4" rx="1" fill="currentColor" fill-opacity="0.2"/>
+                        <rect x="3" y="16" width="18" height="4" rx="1" fill="currentColor" fill-opacity="0.2"/>
+                    </svg>
+                    <span class="text-xs font-medium">Menu</span>
+                </button>
+            </div>
+        </nav>
+
+    </div><!-- End mainApp -->
 
     <!-- Mobile Menu Modal -->
     <div id="mobileMenu" class="hidden fixed inset-0 bg-black/50 z-50" onclick="toggleMenu()">
@@ -491,43 +402,21 @@
             <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
             
             <div class="space-y-3">
-                <button onclick="exportToCSV(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg transition btn-touch">
+                <button onclick="openSettings(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg transition btn-touch">
                     <svg class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7 10L12 15L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 1v3m0 16v3M4.22 4.22l2.12 2.12m11.32 11.32l2.12 2.12M1 12h3m16 0h3M4.22 19.78l2.12-2.12m11.32-11.32l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
-                    <span class="font-medium text-gray-900">Export ke CSV</span>
-                </button>
-                
-                <button onclick="document.getElementById('importCSV').click(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg transition btn-touch">
-                    <svg class="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none">
-                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <span class="font-medium text-gray-900">Import dari CSV</span>
+                    <span class="font-medium text-gray-900">Pengaturan</span>
                 </button>
                 
                 <div class="border-t border-gray-200 pt-3">
                     <button onclick="handleLogout(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-red-50 rounded-lg transition btn-touch">
                         <svg class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none">
-                            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m7 14l5-5m0 0l-5-5m5 5H9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                         <span class="font-medium text-red-600">Keluar</span>
                     </button>
-                </div>
-                
-                <div class="border-t border-gray-200 pt-3">
-                    <div class="flex items-center justify-between px-4 py-2">
-                        <span class="text-sm text-gray-600">Database</span>
-                        <div class="flex items-center space-x-2">
-                            <div class="w-2 h-2 rounded-full bg-green-500"></div>
-                            <span class="text-sm font-medium text-gray-900">Supabase</span>
-                        </div>
-                    </div>
                 </div>
             </div>
             
@@ -537,7 +426,59 @@
         </div>
     </div>
 
-    <!-- Modal Label -->
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-scaleIn" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Pengaturan</h3>
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-gray-600 transition btn-touch">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Sekolah (untuk Label)</label>
+                    <input type="text" id="settingsSchoolName" placeholder="SMA NEGERI 1 JAKARTA" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
+                    <p class="text-xs text-gray-500 mt-1">Akan otomatis tersimpan untuk semua label</p>
+                </div>
+                
+                <div class="pt-4 border-t border-gray-200">
+                    <button onclick="saveSettings()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition shadow-lg hover:shadow-xl btn-touch">
+                        Simpan Pengaturan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-scaleIn" onclick="event.stopPropagation()">
+            <div class="text-center mb-6">
+                <div id="confirmIcon" class="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 id="confirmTitle" class="text-lg font-bold text-gray-900 mb-2">Konfirmasi</h3>
+                <p id="confirmMessage" class="text-gray-600 text-sm"></p>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="confirmAction(false)" class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium rounded-xl transition btn-touch">
+                    Batal
+                </button>
+                <button id="confirmBtn" onclick="confirmAction(true)" class="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition btn-touch">
+                    Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Label Modal -->
     <div id="labelModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
         <div class="bg-white w-full md:max-w-lg md:rounded-2xl rounded-t-2xl p-6 animate-slideUp max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
@@ -549,16 +490,11 @@
                 </button>
             </div>
             
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Sekolah</label>
-                <input type="text" id="schoolName" value="SMA NEGERI 1 JAKARTA" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
-            </div>
-            
             <div id="printArea" class="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4 bg-gray-50">
                 <div class="bg-white border-2 border-black p-4 text-center max-w-xs mx-auto">
                     <div class="border-b border-black pb-2 mb-2">
                         <p class="text-xs font-semibold mb-1">MILIK PERPUSTAKAAN</p>
-                        <p id="labelSchoolName" class="text-sm font-bold">SMA NEGERI 1 JAKARTA</p>
+                        <p id="labelSchoolName" class="text-sm font-bold">-</p>
                     </div>
                     
                     <div class="space-y-1 mb-3 text-xs text-left">
@@ -577,8 +513,7 @@
             <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
                 <button onclick="printLabel()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center space-x-2 btn-touch">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                        <path d="M6 9V2H18V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M6 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V11C2 10.4696 2.21071 9.96086 2.58579 9.58579C2.96086 9.21071 3.46957 9 4 9H20C20.5304 9 21.0391 9.21071 21.4142 9.58579C21.7893 9.96086 22 10.4696 22 11V16C22 16.5304 21.7893 17.0391 21.4142 17.4142C21.0391 17.7893 20.5304 18 20 18H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.1"/>
+                        <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/>
                         <rect x="6" y="14" width="12" height="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
                     </svg>
                     <span>Cetak</span>
@@ -590,39 +525,30 @@
         </div>
     </div>
 
-    </div><!-- End mainApp -->
-
     <script>
-        // Supabase Configuration
+        // Supabase Config
         const SUPABASE_URL = 'https://vxpgiedokvkbtcfpbbay.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4cGdpZWRva3ZrYnRjZnBiYmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNjIzNTgsImV4cCI6MjA4NTYzODM1OH0.UPs_SaVUcDDRCV-ofMoWyE7WJAkyLK7ac24SWJ52tjM';
-        
-        // Use different variable name to avoid conflict
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // State
         let books = [];
         let currentBook = null;
-        let isOnline = navigator.onLine;
-        let syncQueue = [];
-        let currentView = 'list';
-        let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
         let currentUser = null;
+        let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
+        let settings = JSON.parse(localStorage.getItem('librarySettings') || '{"schoolName": "SMA NEGERI 1 JAKARTA"}');
+        let selectMode = false;
+        let selectedBooks = new Set();
+        let editingBookId = null;
+        let confirmCallback = null;
         
         // Initialize
-        document.addEventListener('DOMContentLoaded', async function() {
-            // Check authentication first
-            await checkAuth();
-        });
+        document.addEventListener('DOMContentLoaded', checkAuth);
         
         async function checkAuth() {
             console.log('🔍 Checking authentication...');
-            
             try {
                 const { data: { session }, error } = await supabaseClient.auth.getSession();
-                
-                console.log('📦 Session data:', session);
-                console.log('❌ Session error:', error);
                 
                 if (error) throw error;
                 
@@ -633,18 +559,8 @@
                     await loadBooks();
                     setupRealtimeSubscription();
                     setupEventListeners();
-                    
-                    // Online/Offline listeners for sync queue
-                    window.addEventListener('online', () => {
-                        isOnline = true;
-                        processSyncQueue();
-                    });
-                    
-                    window.addEventListener('offline', () => {
-                        isOnline = false;
-                    });
                 } else {
-                    console.log('❌ No session found, showing login page');
+                    console.log('❌ No session, showing login');
                     showLoginPage();
                 }
             } catch (error) {
@@ -657,14 +573,11 @@
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
             
-            // Setup login form listener
             const loginForm = document.getElementById('loginForm');
             if (loginForm) {
-                loginForm.removeEventListener('submit', handleLogin); // Remove old listener
-                loginForm.addEventListener('submit', handleLogin); // Add new listener
+                loginForm.removeEventListener('submit', handleLogin);
+                loginForm.addEventListener('submit', handleLogin);
                 console.log('✅ Login form listener attached');
-            } else {
-                console.error('❌ Login form not found!');
             }
         }
         
@@ -688,61 +601,28 @@
             errorMsg.classList.add('hidden');
             
             try {
-                console.log('📡 Calling Supabase signInWithPassword...');
-                
+                console.log('📡 Calling Supabase...');
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password
                 });
                 
-                console.log('📦 Response data:', data);
-                console.log('❌ Response error:', error);
+                if (error) throw error;
+                if (!data.user) throw new Error('No user data');
                 
-                if (error) {
-                    console.error('🚫 Login failed:', error);
-                    throw error;
-                }
-                
-                if (!data.user) {
-                    console.error('🚫 No user in response');
-                    throw new Error('Login gagal: Tidak ada data user');
-                }
-                
-                console.log('✅ Login success! User:', data.user.email);
-                
+                console.log('✅ Login success!');
                 currentUser = data.user;
                 showMainApp();
                 await loadBooks();
                 setupRealtimeSubscription();
                 setupEventListeners();
                 
-                // Online/Offline listeners
-                window.addEventListener('online', () => {
-                    isOnline = true;
-                    processSyncQueue();
-                });
-                
-                window.addEventListener('offline', () => {
-                    isOnline = false;
-                });
-                
             } catch (error) {
-                console.error('💥 Login error caught:', error);
-                
-                let errorMessage = 'Gagal login';
-                
-                if (error.message === 'Invalid login credentials') {
-                    errorMessage = 'Email atau password salah';
-                } else if (error.message.includes('Email not confirmed')) {
-                    errorMessage = 'Email belum dikonfirmasi. Silakan cek email Anda.';
-                } else if (error.message) {
-                    errorMessage = error.message;
-                }
-                
-                errorMsg.textContent = errorMessage;
+                console.error('💥 Login error:', error);
+                errorMsg.textContent = error.message === 'Invalid login credentials' 
+                    ? 'Email atau password salah' 
+                    : error.message;
                 errorMsg.classList.remove('hidden');
-                
-                console.log('📝 Showing error:', errorMessage);
             } finally {
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<span>Masuk</span>';
@@ -750,7 +630,8 @@
         }
         
         async function handleLogout() {
-            if (!confirm('Yakin ingin keluar?')) return;
+            const confirmed = await showConfirm('Yakin ingin keluar?', 'Anda akan kembali ke halaman login', 'Keluar');
+            if (!confirmed) return;
             
             try {
                 await supabaseClient.auth.signOut();
@@ -767,7 +648,6 @@
         function setupEventListeners() {
             document.getElementById('searchInput').addEventListener('input', debounce(renderBooks, 300));
             document.getElementById('filterCategory').addEventListener('change', renderBooks);
-            document.getElementById('schoolName').addEventListener('input', updateLabelSchoolName);
             document.getElementById('bookForm').addEventListener('submit', handleFormSubmit);
         }
         
@@ -792,8 +672,7 @@
         function setupRealtimeSubscription() {
             supabaseClient
                 .channel('books')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, payload => {
-                    console.log('Real-time update:', payload);
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, () => {
                     loadBooks();
                 })
                 .subscribe();
@@ -807,7 +686,7 @@
             submitBtn.innerHTML = '<div class="spinner mx-auto"></div>';
             submitBtn.disabled = true;
             
-            const book = {
+            const bookData = {
                 title: document.getElementById('title').value.trim(),
                 author: document.getElementById('author').value.trim(),
                 publisher: document.getElementById('publisher').value.trim() || null,
@@ -816,27 +695,37 @@
                 isbn: document.getElementById('isbn').value.trim() || null,
                 category: document.getElementById('category').value,
                 location: document.getElementById('location').value.trim() || null,
-                code: generateBookCode()
             };
             
             try {
-                const { data, error } = await supabaseClient
-                    .from('books')
-                    .insert([book])
-                    .select();
+                if (editingBookId) {
+                    // Update existing book
+                    const { error } = await supabaseClient
+                        .from('books')
+                        .update(bookData)
+                        .eq('id', editingBookId);
+                    
+                    if (error) throw error;
+                    showToast('✅ Buku berhasil diupdate');
+                } else {
+                    // Add new book
+                    bookData.code = generateBookCode();
+                    const { error } = await supabaseClient
+                        .from('books')
+                        .insert([bookData]);
+                    
+                    if (error) throw error;
+                    showToast('✅ Buku berhasil ditambahkan');
+                }
                 
-                if (error) throw error;
+                cancelEdit();
                 
-                document.getElementById('bookForm').reset();
-                showToast('✅ Buku berhasil ditambahkan');
-                
-                // Switch to list view on mobile after adding
                 if (window.innerWidth < 768) {
                     switchView('list');
                 }
             } catch (error) {
-                console.error('Error adding book:', error);
-                showToast('❌ Gagal menambahkan buku', 'error');
+                console.error('Error saving book:', error);
+                showToast('❌ Gagal menyimpan buku', 'error');
             } finally {
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
@@ -867,6 +756,14 @@
             });
             
             const container = document.getElementById('booksList');
+            const selectModeBtn = document.getElementById('selectModeBtn');
+            
+            // Show/hide select mode button based on books count
+            if (filtered.length > 0) {
+                selectModeBtn.classList.remove('hidden');
+            } else {
+                selectModeBtn.classList.add('hidden');
+            }
             
             if (filtered.length === 0) {
                 container.innerHTML = `
@@ -881,8 +778,14 @@
             }
             
             container.innerHTML = filtered.map(book => `
-                <div class="border border-gray-200 rounded-lg p-3 md:p-4 hover:border-blue-300 hover:shadow-sm transition">
+                <div class="border border-gray-200 rounded-lg p-3 md:p-4 hover:border-blue-300 hover:shadow-sm transition ${selectMode ? 'checkbox-item' : ''}" ${selectMode ? `onclick="toggleSelectBook(${book.id})"` : ''}>
                     <div class="flex justify-between items-start space-x-3">
+                        ${selectMode ? `
+                            <div class="pt-1">
+                                <input type="checkbox" id="check-${book.id}" ${selectedBooks.has(book.id) ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" onclick="event.stopPropagation()">
+                            </div>
+                        ` : ''}
+                        
                         <div class="flex-1 min-w-0">
                             <h3 class="font-semibold text-gray-900 mb-1 text-sm md:text-base truncate">${book.title}</h3>
                             <p class="text-xs md:text-sm text-gray-600 mb-2">oleh ${book.author}</p>
@@ -894,26 +797,34 @@
                             
                             <div class="grid grid-cols-2 gap-1 text-xs text-gray-600">
                                 ${book.publisher ? `<div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/></svg>${book.publisher}</div>` : ''}
-                                ${book.year ? `<div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2"/></svg>${book.year}</div>` : ''}
+                                ${book.year ? `<div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2"/></svg>${book.year}</div>` : ''}
                                 <div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/></svg>${book.quantity} eks</div>
                                 <div class="mono font-medium text-blue-600">${book.code}</div>
                             </div>
                         </div>
                         
-                        <div class="flex flex-col space-y-1.5">
-                            <button onclick="generateLabel(${book.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                                </svg>
-                                <span>Label</span>
-                            </button>
-                            <button onclick="deleteBook(${book.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                                <span>Hapus</span>
-                            </button>
-                        </div>
+                        ${!selectMode ? `
+                            <div class="flex flex-col space-y-1.5">
+                                <button onclick="generateLabel(${book.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                                        <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <span>Label</span>
+                                </button>
+                                <button onclick="editBook(${book.id})" class="bg-amber-50 hover:bg-amber-100 text-amber-600 px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7m-1.586-9.414a2 2 0 012.828 0l1.414 1.414a2 2 0 010 2.828L9.828 19.172a2 2 0 01-1.414.586H6v-2.414a2 2 0 01.586-1.414l9.828-9.828z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <span>Edit</span>
+                                </button>
+                                <button onclick="deleteBook(${book.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    <span>Hapus</span>
+                                </button>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
@@ -936,8 +847,45 @@
             document.getElementById('labelCount').textContent = labelsPrinted;
         }
         
+        function editBook(bookId) {
+            const book = books.find(b => b.id === bookId);
+            if (!book) return;
+            
+            editingBookId = bookId;
+            
+            document.getElementById('editBookId').value = bookId;
+            document.getElementById('title').value = book.title;
+            document.getElementById('author').value = book.author;
+            document.getElementById('publisher').value = book.publisher || '';
+            document.getElementById('year').value = book.year || '';
+            document.getElementById('quantity').value = book.quantity;
+            document.getElementById('isbn').value = book.isbn || '';
+            document.getElementById('category').value = book.category;
+            document.getElementById('location').value = book.location || '';
+            
+            document.getElementById('formTitle').textContent = 'Edit Buku';
+            document.getElementById('submitBtnText').textContent = 'Update Buku';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            
+            if (window.innerWidth < 768) {
+                switchView('add');
+            }
+            
+            document.getElementById('title').focus();
+        }
+        
+        function cancelEdit() {
+            editingBookId = null;
+            document.getElementById('bookForm').reset();
+            document.getElementById('editBookId').value = '';
+            document.getElementById('formTitle').textContent = 'Tambah Buku';
+            document.getElementById('submitBtnText').textContent = 'Simpan Buku';
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+        
         async function deleteBook(bookId) {
-            if (!confirm('Yakin ingin menghapus buku ini?')) return;
+            const confirmed = await showConfirm('Yakin ingin menghapus buku ini?', 'Data yang dihapus tidak dapat dikembalikan', 'Hapus');
+            if (!confirmed) return;
             
             try {
                 const { error } = await supabaseClient
@@ -954,17 +902,154 @@
             }
         }
         
+        function toggleSelectMode() {
+            selectMode = !selectMode;
+            selectedBooks.clear();
+            
+            const selectModeText = document.getElementById('selectModeText');
+            const batchActionsBar = document.getElementById('batchActionsBar');
+            
+            if (selectMode) {
+                selectModeText.textContent = 'Batal Pilih';
+                batchActionsBar.classList.remove('hidden');
+            } else {
+                selectModeText.textContent = 'Pilih Banyak';
+                batchActionsBar.classList.add('hidden');
+            }
+            
+            renderBooks();
+            updateSelectedCount();
+        }
+        
+        function toggleSelectBook(bookId) {
+            if (selectedBooks.has(bookId)) {
+                selectedBooks.delete(bookId);
+            } else {
+                selectedBooks.add(bookId);
+            }
+            
+            const checkbox = document.getElementById(`check-${bookId}`);
+            if (checkbox) {
+                checkbox.checked = selectedBooks.has(bookId);
+            }
+            
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            document.getElementById('selectedCount').textContent = selectedBooks.size;
+        }
+        
+        function clearSelection() {
+            toggleSelectMode();
+        }
+        
+        async function batchPrintLabels() {
+            if (selectedBooks.size === 0) {
+                showToast('❌ Pilih minimal 1 buku', 'error');
+                return;
+            }
+            
+            const selectedBooksArray = Array.from(selectedBooks).map(id => books.find(b => b.id === id));
+            
+            // Generate batch print HTML
+            const printWindow = window.open('', '_blank');
+            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
+            
+            let printHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Print Labels</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+                        .label-page { page-break-after: always; }
+                        .label { 
+                            width: 8cm; 
+                            height: 10cm; 
+                            border: 2px solid #000; 
+                            padding: 15px; 
+                            margin: 10px auto; 
+                            text-align: center;
+                            box-sizing: border-box;
+                        }
+                        .label h3 { font-size: 10px; margin: 0 0 5px 0; border-bottom: 1px solid #000; padding-bottom: 5px; }
+                        .label h2 { font-size: 12px; margin: 0 0 10px 0; }
+                        .label p { font-size: 9px; margin: 3px 0; text-align: left; }
+                        .label .qr { margin: 10px 0; }
+                        @media print {
+                            body { margin: 0; padding: 0; }
+                            .label { margin: 0; page-break-inside: avoid; }
+                        }
+                    </style>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+                </head>
+                <body>
+            `;
+            
+            selectedBooksArray.forEach((book, index) => {
+                const qrData = JSON.stringify({
+                    code: book.code,
+                    title: book.title,
+                    author: book.author,
+                    isbn: book.isbn
+                });
+                
+                printHTML += `
+                    <div class="label">
+                        <h3>MILIK PERPUSTAKAAN</h3>
+                        <h2>${schoolName}</h2>
+                        <p><strong>Judul:</strong> ${book.title}</p>
+                        <p><strong>Pengarang:</strong> ${book.author}</p>
+                        <p><strong>Kode:</strong> ${book.code}</p>
+                        <div class="qr" id="qr-${index}"></div>
+                        <p style="font-family: monospace; font-size: 8px;">${book.isbn || ''}</p>
+                        <p style="font-size: 8px; color: #666;">${new Date().toLocaleDateString('id-ID')}</p>
+                    </div>
+                `;
+            });
+            
+            printHTML += `
+                    <script>
+                        window.onload = function() {
+                            ${selectedBooksArray.map((book, index) => `
+                                new QRCode(document.getElementById('qr-${index}'), {
+                                    text: '${JSON.stringify({code: book.code, title: book.title, author: book.author, isbn: book.isbn}).replace(/'/g, "\\'")}',
+                                    width: 80,
+                                    height: 80
+                                });
+                            `).join('\n')}
+                            
+                            setTimeout(() => window.print(), 1000);
+                        };
+                    </script>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(printHTML);
+            printWindow.document.close();
+            
+            labelsPrinted += selectedBooks.size;
+            localStorage.setItem('labelsPrinted', labelsPrinted.toString());
+            updateStats();
+            
+            showToast(`🖨️ ${selectedBooks.size} label siap dicetak`);
+            clearSelection();
+        }
+        
         function generateLabel(bookId) {
             currentBook = books.find(b => b.id === bookId);
             if (!currentBook) return;
             
+            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
+            
+            document.getElementById('labelSchoolName').textContent = schoolName;
             document.getElementById('labelTitle').textContent = currentBook.title;
             document.getElementById('labelAuthor').textContent = currentBook.author;
             document.getElementById('labelCode').textContent = currentBook.code;
             document.getElementById('labelISBN').textContent = currentBook.isbn ? `ISBN: ${currentBook.isbn}` : '';
             document.getElementById('labelDate').textContent = new Date().toLocaleDateString('id-ID');
-            
-            updateLabelSchoolName();
             
             const qrcodeContainer = document.getElementById('qrcode');
             qrcodeContainer.innerHTML = '';
@@ -988,11 +1073,6 @@
             document.getElementById('labelModal').classList.remove('hidden');
         }
         
-        function updateLabelSchoolName() {
-            const schoolName = document.getElementById('schoolName').value;
-            document.getElementById('labelSchoolName').textContent = schoolName;
-        }
-        
         function closeModal() {
             document.getElementById('labelModal').classList.add('hidden');
         }
@@ -1005,87 +1085,48 @@
             showToast('🖨️ Label siap dicetak');
         }
         
-        function exportToCSV() {
-            const headers = ['Kode', 'Judul', 'Pengarang', 'Penerbit', 'Tahun', 'Jumlah', 'ISBN', 'Kategori', 'Lokasi', 'Tanggal Ditambahkan'];
-            const rows = books.map(book => [
-                book.code,
-                book.title,
-                book.author,
-                book.publisher || '',
-                book.year || '',
-                book.quantity,
-                book.isbn || '',
-                book.category,
-                book.location || '',
-                new Date(book.created_at).toLocaleDateString('id-ID')
-            ]);
-            
-            let csv = headers.join(',') + '\n';
-            rows.forEach(row => {
-                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `perpustakaan-${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            showToast('💾 Data berhasil di-export');
+        function openSettings() {
+            document.getElementById('settingsSchoolName').value = settings.schoolName || '';
+            document.getElementById('settingsModal').classList.remove('hidden');
         }
         
-        async function importFromCSV(event) {
-            const file = event.target.files[0];
-            if (!file) return;
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+        
+        function saveSettings() {
+            const schoolName = document.getElementById('settingsSchoolName').value.trim();
             
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const csv = e.target.result;
-                    const lines = csv.split('\n').filter(line => line.trim());
-                    const headers = lines[0].split(',');
-                    
-                    const newBooks = [];
-                    for (let i = 1; i < lines.length; i++) {
-                        const values = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(v => v.replace(/^"|"$/g, ''));
-                        
-                        if (values.length >= 2) {
-                            newBooks.push({
-                                code: values[0] || generateBookCode(),
-                                title: values[1],
-                                author: values[2],
-                                publisher: values[3] || null,
-                                year: parseInt(values[4]) || null,
-                                quantity: parseInt(values[5]) || 1,
-                                isbn: values[6] || null,
-                                category: values[7] || 'Lainnya',
-                                location: values[8] || null
-                            });
-                        }
-                    }
-                    
-                    if (newBooks.length > 0) {
-                        const { error } = await supabaseClient
-                            .from('books')
-                            .insert(newBooks);
-                        
-                        if (error) throw error;
-                        
-                        showToast(`📥 ${newBooks.length} buku berhasil di-import`);
-                    }
-                } catch (error) {
-                    console.error('Error importing CSV:', error);
-                    showToast('❌ Gagal import CSV', 'error');
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
+            if (schoolName) {
+                settings.schoolName = schoolName;
+                localStorage.setItem('librarySettings', JSON.stringify(settings));
+                showToast('✅ Pengaturan berhasil disimpan');
+                closeSettings();
+            } else {
+                showToast('❌ Nama sekolah tidak boleh kosong', 'error');
+            }
+        }
+        
+        function showConfirm(title, message, confirmText = 'Ya') {
+            return new Promise((resolve) => {
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                document.getElementById('confirmBtn').textContent = confirmText;
+                document.getElementById('confirmModal').classList.remove('hidden');
+                
+                confirmCallback = resolve;
+            });
+        }
+        
+        function confirmAction(confirmed) {
+            document.getElementById('confirmModal').classList.add('hidden');
+            if (confirmCallback) {
+                confirmCallback(confirmed);
+                confirmCallback = null;
+            }
         }
         
         function switchView(view) {
-            currentView = view;
             const formSection = document.getElementById('formSection');
             const listSection = document.getElementById('listSection');
             const btnViewList = document.getElementById('btnViewList');
@@ -1119,20 +1160,12 @@
         }
         
         function toggleMenu() {
-            const menu = document.getElementById('mobileMenu');
-            menu.classList.toggle('hidden');
-        }
-        
-        async function processSyncQueue() {
-            if (syncQueue.length === 0) return;
-            
-            // Process sync queue for offline operations
-            // Implementation depends on your offline strategy
+            document.getElementById('mobileMenu').classList.toggle('hidden');
         }
         
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
-            toast.className = `toast animate-slideUp ${type === 'error' ? 'bg-red-500' : 'bg-gray-900'} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium`;
+            toast.className = `toast animate-slideUp ${type === 'error' ? 'bg-red-500' : 'bg-gray-900'} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium max-w-sm`;
             toast.textContent = message;
             document.body.appendChild(toast);
             
@@ -1154,22 +1187,23 @@
             };
         }
         
-        // Close modal on ESC
-        document.addEventListener('keydown', function(e) {
+        // Close modals on ESC
+        document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeModal();
+                closeSettings();
                 const menu = document.getElementById('mobileMenu');
-                if (!menu.classList.contains('hidden')) {
-                    toggleMenu();
-                }
+                if (!menu.classList.contains('hidden')) toggleMenu();
             }
         });
         
-        // PWA Install prompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
+        // Click outside to close modals
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeSettings();
+        });
+        
+        document.getElementById('labelModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
         });
     </script>
 </body>
