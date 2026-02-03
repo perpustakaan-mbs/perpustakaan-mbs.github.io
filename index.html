@@ -2,33 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen Perpustakaan Sekolah</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#1e40af">
+    <meta name="description" content="Sistem Manajemen Perpustakaan Sekolah">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiUGVycHVzdGFrYWFuIFNla29sYWgiLCJzaG9ydF9uYW1lIjoiUGVycHVzdGFrYWFuIiwiZGVzY3JpcHRpb24iOiJTaXN0ZW0gTWFuYWplbWVuIEJ1a3UiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiMxZTQwYWYiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyB2aWV3Qm94PScwIDAgMTkyIDE5MicgZmlsbD0nbm9uZSclM0UlM0NyZWN0IHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyBmaWxsPSclMjMxZTQwYWYnLyUzRSUzQ3BhdGggZD0nTTk2IDQ4Yy0yNi41MSAwLTQ4IDIxLjQ5LTQ4IDQ4djQ4aDk2Vjk2YzAtMjYuNTEtMjEuNDktNDgtNDgtNDh6bTAgMGMtMjYuNTEgMC00OC0yMS40OS00OC00OEg0OGMwIDI2LjUxIDIxLjQ5IDQ4IDQ4IDQ4eicgc3Ryb2tlPSclMjNmZmYnIHN0cm9rZS13aWR0aD0nOCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8lM0UlM0Mvc3ZnJTNFIiwidHlwZSI6ImltYWdlL3N2Zyt4bWwiLCJzaXplcyI6IjE5MngxOTIifV19">
+    <title>Perpustakaan Sekolah</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
         * {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
+        
         .mono {
-            font-family: 'Space Mono', monospace;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
         }
         
         @keyframes slideUp {
@@ -42,38 +35,95 @@
             }
         }
         
-        .animate-slideDown {
-            animation: slideDown 0.5s ease-out forwards;
-        }
-        
-        .animate-fadeIn {
-            animation: fadeIn 0.6s ease-out forwards;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .animate-slideUp {
-            animation: slideUp 0.5s ease-out forwards;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         
-        .card-hover {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out;
         }
         
-        .card-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
         
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
         
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
         }
         
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Mobile bottom nav fixed */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 50;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        /* Content padding untuk mobile */
+        .content-wrapper {
+            padding-bottom: calc(60px + env(safe-area-inset-bottom));
+        }
+        
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none;
+            }
+            .content-wrapper {
+                padding-bottom: 0;
+            }
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: calc(80px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+        }
+        
+        @media (min-width: 768px) {
+            .toast {
+                bottom: 20px;
+            }
+        }
+        
+        /* Print styles */
         @media print {
             body * {
                 visibility: hidden;
@@ -92,174 +142,193 @@
             }
         }
         
-        .stat-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border: 2px solid transparent;
-            background-clip: padding-box;
+        /* Status indicator */
+        .status-indicator {
             position: relative;
         }
         
-        .stat-card::before {
+        .status-indicator::before {
             content: '';
             position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             top: 0;
-            left: 0;
             right: 0;
-            bottom: 0;
-            border-radius: inherit;
-            padding: 2px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0.3;
+        }
+        
+        .status-online::before {
+            background: #10b981;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+        
+        .status-offline::before {
+            background: #ef4444;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+        
+        .status-syncing::before {
+            background: #f59e0b;
+            box-shadow: 0 0 0 2px #ffffff;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Touch feedback */
+        .btn-touch {
+            transition: all 0.15s ease;
+        }
+        
+        .btn-touch:active {
+            transform: scale(0.95);
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50">
     
     <!-- Header -->
-    <header class="gradient-bg text-white shadow-2xl">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex items-center justify-between animate-slideDown">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-600 p-2 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-3xl font-bold">Perpustakaan Digital</h1>
-                        <p class="text-white/80 text-sm mt-1">Sistem Manajemen Buku Sekolah</p>
+                        <h1 class="text-lg md:text-xl font-semibold text-gray-900">Perpustakaan</h1>
+                        <p class="text-xs text-gray-500 hidden md:block">Sistem Manajemen Buku</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="exportData()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-lg transition flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        <span>Export</span>
-                    </button>
-                    <button onclick="document.getElementById('importFile').click()" class="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-2 rounded-lg transition flex items-center space-x-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                        <span>Import</span>
-                    </button>
-                    <input type="file" id="importFile" accept=".json" onchange="importData(event)" class="hidden">
+                
+                <div class="flex items-center space-x-2">
+                    <!-- Status Indicator -->
+                    <div id="syncStatus" class="status-indicator status-online hidden md:flex items-center space-x-2 px-3 py-1.5 bg-gray-100 rounded-lg text-xs font-medium text-gray-700">
+                        <span id="syncStatusText">Online</span>
+                    </div>
+                    
+                    <!-- Desktop Actions -->
+                    <div class="hidden md:flex items-center space-x-2">
+                        <button onclick="exportToCSV()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center space-x-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span>Export</span>
+                        </button>
+                        <button onclick="document.getElementById('importCSV').click()" class="px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center space-x-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            <span>Import</span>
+                        </button>
+                    </div>
+                    <input type="file" id="importCSV" accept=".csv" onchange="importFromCSV(event)" class="hidden">
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="container mx-auto px-4 py-8">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-4 md:py-6 content-wrapper">
         
-        <!-- Stats Dashboard -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-fadeIn">
-            <div class="stat-card rounded-2xl p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm font-medium">Total Buku</p>
-                        <p id="totalBooks" class="text-4xl font-bold gradient-text mt-2">0</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-500 to-indigo-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                    </div>
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 animate-fadeIn">
+            <div class="bg-white rounded-xl p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-2xl">📚</span>
+                    <div id="booksLoader" class="spinner hidden"></div>
                 </div>
+                <p class="text-xs text-gray-600 mb-1">Total Buku</p>
+                <p id="totalBooks" class="text-2xl font-semibold text-gray-900">0</p>
             </div>
-
-            <div class="stat-card rounded-2xl p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm font-medium">Kategori</p>
-                        <p id="totalCategories" class="text-4xl font-bold gradient-text mt-2">0</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-pink-500 to-rose-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                        </svg>
-                    </div>
+            
+            <div class="bg-white rounded-xl p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-2xl">🏷️</span>
                 </div>
+                <p class="text-xs text-gray-600 mb-1">Kategori</p>
+                <p id="totalCategories" class="text-2xl font-semibold text-gray-900">0</p>
             </div>
-
-            <div class="stat-card rounded-2xl p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm font-medium">Ditambahkan Bulan Ini</p>
-                        <p id="booksThisMonth" class="text-4xl font-bold gradient-text mt-2">0</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-green-500 to-emerald-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                    </div>
+            
+            <div class="bg-white rounded-xl p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-2xl">📅</span>
                 </div>
+                <p class="text-xs text-gray-600 mb-1">Bulan Ini</p>
+                <p id="booksThisMonth" class="text-2xl font-semibold text-gray-900">0</p>
             </div>
-
-            <div class="stat-card rounded-2xl p-6 card-hover">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-600 text-sm font-medium">Label Tercetak</p>
-                        <p id="labelsPrinted" class="text-4xl font-bold gradient-text mt-2">0</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-orange-500 to-amber-600 p-4 rounded-xl">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                        </svg>
-                    </div>
+            
+            <div class="bg-white rounded-xl p-4 border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-2xl">🖨️</span>
                 </div>
+                <p class="text-xs text-gray-600 mb-1">Label</p>
+                <p id="labelCount" class="text-2xl font-semibold text-gray-900">0</p>
             </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Mobile View Switcher -->
+        <div id="viewSwitcher" class="flex md:hidden bg-white rounded-xl border border-gray-200 p-1 mb-4">
+            <button onclick="switchView('list')" id="btnViewList" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white transition">
+                Daftar Buku
+            </button>
+            <button onclick="switchView('add')" id="btnViewAdd" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                Tambah Buku
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <!-- Form Input Buku -->
-            <div class="lg:col-span-1 animate-slideUp">
-                <div class="bg-white rounded-2xl shadow-xl p-6 card-hover">
-                    <h2 class="text-2xl font-bold gradient-text mb-6 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="formSection" class="md:col-span-1 hidden md:block animate-slideUp">
+                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                        Tambah Buku Baru
+                        Tambah Buku
                     </h2>
-                    <form id="bookForm" class="space-y-4">
+                    
+                    <form id="bookForm" class="space-y-3">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Judul Buku *</label>
-                            <input type="text" id="title" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul *</label>
+                            <input type="text" id="title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Pengarang *</label>
-                            <input type="text" id="author" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Pengarang *</label>
+                            <input type="text" id="author" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Penerbit</label>
-                            <input type="text" id="publisher" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Penerbit</label>
+                            <input type="text" id="publisher" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Tahun</label>
-                                <input type="number" id="year" min="1900" max="2100" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                                <input type="number" id="year" min="1900" max="2100" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Jumlah</label>
-                                <input type="number" id="quantity" min="1" value="1" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
+                                <input type="number" id="quantity" min="1" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                             </div>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">ISBN</label>
-                            <input type="text" id="isbn" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition mono">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ISBN</label>
+                            <input type="text" id="isbn" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm mono">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Kategori *</label>
-                            <select id="category" required class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kategori *</label>
+                            <select id="category" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                                 <option value="">Pilih Kategori</option>
                                 <option value="Fiksi">Fiksi</option>
                                 <option value="Non-Fiksi">Non-Fiksi</option>
@@ -272,16 +341,15 @@
                                 <option value="Seni">Seni</option>
                                 <option value="Biografi">Biografi</option>
                                 <option value="Referensi">Referensi</option>
-                                <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Lokasi Rak</label>
-                            <input type="text" id="location" placeholder="Contoh: A-12" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi Rak</label>
+                            <input type="text" id="location" placeholder="Contoh: A-12" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                         </div>
                         
-                        <button type="submit" class="w-full gradient-bg text-white font-bold py-4 px-6 rounded-xl hover:shadow-2xl transform hover:scale-105 transition duration-300 flex items-center justify-center space-x-2">
+                        <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center space-x-2 btn-touch">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
@@ -292,20 +360,20 @@
             </div>
 
             <!-- Daftar Buku -->
-            <div class="lg:col-span-2 animate-slideUp" style="animation-delay: 0.1s;">
-                <div class="bg-white rounded-2xl shadow-xl p-6">
-                    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 space-y-4 md:space-y-0">
-                        <h2 class="text-2xl font-bold gradient-text flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="listSection" class="md:col-span-2 animate-slideUp" style="animation-delay: 0.1s;">
+                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
+                    <div class="flex flex-col space-y-3 mb-4">
+                        <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                             </svg>
                             Koleksi Buku
                         </h2>
                         
-                        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-3 w-full md:w-auto">
-                            <input type="text" id="searchInput" placeholder="🔍 Cari judul, pengarang, ISBN..." class="px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition w-full md:w-64">
+                        <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                            <input type="text" id="searchInput" placeholder="🔍 Cari buku..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                             
-                            <select id="filterCategory" class="px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+                            <select id="filterCategory" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                                 <option value="">Semua Kategori</option>
                                 <option value="Fiksi">Fiksi</option>
                                 <option value="Non-Fiksi">Non-Fiksi</option>
@@ -318,64 +386,128 @@
                                 <option value="Seni">Seni</option>
                                 <option value="Biografi">Biografi</option>
                                 <option value="Referensi">Referensi</option>
-                                <option value="Lainnya">Lainnya</option>
                             </select>
                         </div>
                     </div>
 
-                    <div id="booksList" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
-                        <!-- Books will be inserted here -->
+                    <div id="booksList" class="space-y-3 max-h-[calc(100vh-400px)] md:max-h-[600px] overflow-y-auto">
+                        <div class="flex justify-center py-12">
+                            <div class="spinner" style="width: 40px; height: 40px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav md:hidden">
+        <div class="flex justify-around items-center py-3 px-4">
+            <button onclick="switchView('list')" id="navList" class="flex flex-col items-center space-y-1 text-blue-600 btn-touch">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                </svg>
+                <span class="text-xs font-medium">Daftar</span>
+            </button>
+            
+            <button onclick="switchView('add')" id="navAdd" class="flex flex-col items-center space-y-1 text-gray-400 btn-touch">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span class="text-xs font-medium">Tambah</span>
+            </button>
+            
+            <button onclick="toggleMenu()" id="navMenu" class="flex flex-col items-center space-y-1 text-gray-400 btn-touch">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+                <span class="text-xs font-medium">Menu</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Modal -->
+    <div id="mobileMenu" class="hidden fixed inset-0 bg-black/50 z-50" onclick="toggleMenu()">
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 animate-slideUp" onclick="event.stopPropagation()">
+            <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+            
+            <div class="space-y-3">
+                <button onclick="exportToCSV(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg transition btn-touch">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span class="font-medium text-gray-900">Export ke CSV</span>
+                </button>
+                
+                <button onclick="document.getElementById('importCSV').click(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 rounded-lg transition btn-touch">
+                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    <span class="font-medium text-gray-900">Import dari CSV</span>
+                </button>
+                
+                <div class="border-t border-gray-200 pt-3">
+                    <div class="flex items-center justify-between px-4 py-2">
+                        <span class="text-sm text-gray-600">Status</span>
+                        <div class="flex items-center space-x-2">
+                            <div id="mobileStatus" class="w-2 h-2 rounded-full bg-green-500"></div>
+                            <span id="mobileStatusText" class="text-sm font-medium text-gray-900">Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="toggleMenu()" class="w-full mt-4 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium rounded-lg transition btn-touch">
+                Tutup
+            </button>
+        </div>
     </div>
 
-    <!-- Modal untuk Generate Label -->
-    <div id="labelModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 animate-slideDown">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-bold gradient-text">Generate Label Buku</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
+    <!-- Modal Label -->
+    <div id="labelModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-white w-full md:max-w-lg md:rounded-2xl rounded-t-2xl p-6 animate-slideUp max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Label Buku</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition btn-touch">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
             
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Sekolah</label>
-                <input type="text" id="schoolName" value="SMA NEGERI 1 JAKARTA" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring focus:ring-purple-200 transition">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Sekolah</label>
+                <input type="text" id="schoolName" value="SMA NEGERI 1 JAKARTA" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
             </div>
             
-            <div id="printArea" class="border-4 border-dashed border-purple-300 rounded-xl p-8 mb-6 bg-gray-50">
-                <div class="bg-white border-4 border-black p-6 text-center max-w-sm mx-auto" style="page-break-inside: avoid;">
-                    <div class="border-b-2 border-black pb-3 mb-3">
-                        <p class="text-xs font-bold mb-1">MILIK PERPUSTAKAAN</p>
+            <div id="printArea" class="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4 bg-gray-50">
+                <div class="bg-white border-2 border-black p-4 text-center max-w-xs mx-auto">
+                    <div class="border-b border-black pb-2 mb-2">
+                        <p class="text-xs font-semibold mb-1">MILIK PERPUSTAKAAN</p>
                         <p id="labelSchoolName" class="text-sm font-bold">SMA NEGERI 1 JAKARTA</p>
                     </div>
                     
-                    <div class="space-y-2 mb-4 text-xs text-left">
+                    <div class="space-y-1 mb-3 text-xs text-left">
                         <p><strong>Judul:</strong> <span id="labelTitle"></span></p>
                         <p><strong>Pengarang:</strong> <span id="labelAuthor"></span></p>
-                        <p><strong>No. Induk:</strong> <span id="labelCode" class="mono font-bold"></span></p>
+                        <p><strong>Kode:</strong> <span id="labelCode" class="mono font-semibold"></span></p>
                     </div>
                     
                     <div id="qrcode" class="flex justify-center mb-2"></div>
                     
                     <p class="text-xs text-gray-600 mono" id="labelISBN"></p>
-                    <p class="text-xs text-gray-500 mt-2" id="labelDate"></p>
+                    <p class="text-xs text-gray-500 mt-1" id="labelDate"></p>
                 </div>
             </div>
             
-            <div class="flex space-x-3">
-                <button onclick="printLabel()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition flex items-center justify-center space-x-2">
+            <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                <button onclick="printLabel()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-lg transition flex items-center justify-center space-x-2 btn-touch">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
                     </svg>
-                    <span>Cetak Label</span>
+                    <span>Cetak</span>
                 </button>
-                <button onclick="closeModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-xl transition">
+                <button onclick="closeModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2.5 px-4 rounded-lg transition btn-touch">
                     Tutup
                 </button>
             </div>
@@ -383,61 +515,126 @@
     </div>
 
     <script>
-        // Initialize
-        let books = JSON.parse(localStorage.getItem('libraryBooks') || '[]');
-        let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://vxpgiedokvkbtcfpbbay.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4cGdpZWRva3ZrYnRjZnBiYmF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwNjIzNTgsImV4cCI6MjA4NTYzODM1OH0.UPs_SaVUcDDRCV-ofMoWyE7WJAkyLK7ac24SWJ52tjM';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // State
+        let books = [];
         let currentBook = null;
-
-        // Load data on startup
-        document.addEventListener('DOMContentLoaded', function() {
-            renderBooks();
-            updateStats();
+        let isOnline = navigator.onLine;
+        let syncQueue = [];
+        let currentView = 'list';
+        let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadBooks();
+            setupRealtimeSubscription();
+            setupEventListeners();
+            updateOnlineStatus();
             
-            // Add event listeners
-            document.getElementById('searchInput').addEventListener('input', renderBooks);
+            // Online/Offline listeners
+            window.addEventListener('online', () => {
+                isOnline = true;
+                updateOnlineStatus();
+                processSyncQueue();
+            });
+            
+            window.addEventListener('offline', () => {
+                isOnline = false;
+                updateOnlineStatus();
+            });
+        });
+        
+        function setupEventListeners() {
+            document.getElementById('searchInput').addEventListener('input', debounce(renderBooks, 300));
             document.getElementById('filterCategory').addEventListener('change', renderBooks);
             document.getElementById('schoolName').addEventListener('input', updateLabelSchoolName);
-        });
-
-        // Form submit
-        document.getElementById('bookForm').addEventListener('submit', function(e) {
+            document.getElementById('bookForm').addEventListener('submit', handleFormSubmit);
+        }
+        
+        async function loadBooks() {
+            try {
+                const { data, error } = await supabase
+                    .from('books')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                books = data || [];
+                renderBooks();
+                updateStats();
+            } catch (error) {
+                console.error('Error loading books:', error);
+                showToast('Gagal memuat data buku', 'error');
+            }
+        }
+        
+        function setupRealtimeSubscription() {
+            supabase
+                .channel('books')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'books' }, payload => {
+                    console.log('Real-time update:', payload);
+                    loadBooks();
+                })
+                .subscribe();
+        }
+        
+        async function handleFormSubmit(e) {
             e.preventDefault();
             
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="spinner mx-auto"></div>';
+            submitBtn.disabled = true;
+            
             const book = {
-                id: Date.now(),
-                title: document.getElementById('title').value,
-                author: document.getElementById('author').value,
-                publisher: document.getElementById('publisher').value,
-                year: document.getElementById('year').value,
+                title: document.getElementById('title').value.trim(),
+                author: document.getElementById('author').value.trim(),
+                publisher: document.getElementById('publisher').value.trim() || null,
+                year: parseInt(document.getElementById('year').value) || null,
                 quantity: parseInt(document.getElementById('quantity').value),
-                isbn: document.getElementById('isbn').value,
+                isbn: document.getElementById('isbn').value.trim() || null,
                 category: document.getElementById('category').value,
-                location: document.getElementById('location').value,
-                dateAdded: new Date().toISOString(),
+                location: document.getElementById('location').value.trim() || null,
                 code: generateBookCode()
             };
             
-            books.push(book);
-            saveBooks();
-            this.reset();
-            renderBooks();
-            updateStats();
-            
-            // Show success animation
-            showNotification('✅ Buku berhasil ditambahkan!');
-        });
-
+            try {
+                const { data, error } = await supabase
+                    .from('books')
+                    .insert([book])
+                    .select();
+                
+                if (error) throw error;
+                
+                document.getElementById('bookForm').reset();
+                showToast('✅ Buku berhasil ditambahkan');
+                
+                // Switch to list view on mobile after adding
+                if (window.innerWidth < 768) {
+                    switchView('list');
+                }
+            } catch (error) {
+                console.error('Error adding book:', error);
+                showToast('❌ Gagal menambahkan buku', 'error');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+        
         function generateBookCode() {
             const prefix = 'BK';
             const timestamp = Date.now().toString().slice(-6);
             const random = Math.floor(Math.random() * 100).toString().padStart(2, '0');
             return `${prefix}${timestamp}${random}`;
         }
-
-        function saveBooks() {
-            localStorage.setItem('libraryBooks', JSON.stringify(books));
-        }
-
+        
         function renderBooks() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const filterCat = document.getElementById('filterCategory').value;
@@ -454,60 +651,49 @@
                 return matchesSearch && matchesCategory;
             });
             
-            // Sort by date added (newest first)
-            filtered.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
-            
             const container = document.getElementById('booksList');
             
             if (filtered.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-16">
-                        <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="text-center py-12">
+                        <svg class="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        <p class="text-gray-500 text-lg">Tidak ada buku ditemukan</p>
+                        <p class="text-gray-500">Tidak ada buku ditemukan</p>
                     </div>
                 `;
                 return;
             }
             
             container.innerHTML = filtered.map(book => `
-                <div class="border-2 border-gray-200 rounded-xl p-5 hover:border-purple-400 hover:shadow-lg transition duration-300 card-hover">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1">
-                            <div class="flex items-start space-x-4">
-                                <div class="bg-gradient-to-br from-purple-500 to-indigo-600 text-white w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg flex-shrink-0">
-                                    ${book.title.charAt(0).toUpperCase()}
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="font-bold text-lg text-gray-800 mb-1">${book.title}</h3>
-                                    <p class="text-gray-600 text-sm mb-2">oleh ${book.author}</p>
-                                    
-                                    <div class="flex flex-wrap gap-2 mb-3">
-                                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">${book.category}</span>
-                                        ${book.isbn ? `<span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold mono">ISBN: ${book.isbn}</span>` : ''}
-                                        ${book.location ? `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">📍 ${book.location}</span>` : ''}
-                                    </div>
-                                    
-                                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600">
-                                        ${book.publisher ? `<div><span class="font-semibold">Penerbit:</span> ${book.publisher}</div>` : ''}
-                                        ${book.year ? `<div><span class="font-semibold">Tahun:</span> ${book.year}</div>` : ''}
-                                        <div><span class="font-semibold">Jumlah:</span> ${book.quantity} eks</div>
-                                        <div><span class="font-semibold mono">Kode:</span> <span class="mono font-bold text-purple-600">${book.code}</span></div>
-                                    </div>
-                                </div>
+                <div class="border border-gray-200 rounded-lg p-3 md:p-4 hover:border-blue-300 hover:shadow-sm transition">
+                    <div class="flex justify-between items-start space-x-3">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-semibold text-gray-900 mb-1 text-sm md:text-base truncate">${book.title}</h3>
+                            <p class="text-xs md:text-sm text-gray-600 mb-2">oleh ${book.author}</p>
+                            
+                            <div class="flex flex-wrap gap-1.5 mb-2">
+                                <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">${book.category}</span>
+                                ${book.location ? `<span class="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs font-medium">📍 ${book.location}</span>` : ''}
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-1 text-xs text-gray-600">
+                                ${book.publisher ? `<div>📖 ${book.publisher}</div>` : ''}
+                                ${book.year ? `<div>📅 ${book.year}</div>` : ''}
+                                <div>📦 ${book.quantity} eks</div>
+                                <div class="mono font-medium text-blue-600">${book.code}</div>
                             </div>
                         </div>
                         
-                        <div class="flex flex-col space-y-2 ml-4">
-                            <button onclick="generateLabel(${book.id})" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-1 shadow-md">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                        <div class="flex flex-col space-y-1.5">
+                            <button onclick="generateLabel(${book.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
                                 </svg>
                                 <span>Label</span>
                             </button>
-                            <button onclick="deleteBook(${book.id})" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-1 shadow-md">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button onclick="deleteBook(${book.id})" class="bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-medium transition btn-touch flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                                 <span>Hapus</span>
@@ -517,7 +703,7 @@
                 </div>
             `).join('');
         }
-
+        
         function updateStats() {
             document.getElementById('totalBooks').textContent = books.reduce((sum, book) => sum + book.quantity, 0);
             
@@ -527,14 +713,32 @@
             const thisMonth = new Date().getMonth();
             const thisYear = new Date().getFullYear();
             const booksThisMonth = books.filter(book => {
-                const bookDate = new Date(book.dateAdded);
+                const bookDate = new Date(book.created_at);
                 return bookDate.getMonth() === thisMonth && bookDate.getFullYear() === thisYear;
             }).length;
             document.getElementById('booksThisMonth').textContent = booksThisMonth;
             
-            document.getElementById('labelsPrinted').textContent = labelsPrinted;
+            document.getElementById('labelCount').textContent = labelsPrinted;
         }
-
+        
+        async function deleteBook(bookId) {
+            if (!confirm('Yakin ingin menghapus buku ini?')) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('books')
+                    .delete()
+                    .eq('id', bookId);
+                
+                if (error) throw error;
+                
+                showToast('🗑️ Buku berhasil dihapus');
+            } catch (error) {
+                console.error('Error deleting book:', error);
+                showToast('❌ Gagal menghapus buku', 'error');
+            }
+        }
+        
         function generateLabel(bookId) {
             currentBook = books.find(b => b.id === bookId);
             if (!currentBook) return;
@@ -545,10 +749,8 @@
             document.getElementById('labelISBN').textContent = currentBook.isbn ? `ISBN: ${currentBook.isbn}` : '';
             document.getElementById('labelDate').textContent = new Date().toLocaleDateString('id-ID');
             
-            // Update school name
             updateLabelSchoolName();
             
-            // Generate QR Code
             const qrcodeContainer = document.getElementById('qrcode');
             qrcodeContainer.innerHTML = '';
             
@@ -561,8 +763,8 @@
             
             new QRCode(qrcodeContainer, {
                 text: qrData,
-                width: 120,
-                height: 120,
+                width: 100,
+                height: 100,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
@@ -570,98 +772,215 @@
             
             document.getElementById('labelModal').classList.remove('hidden');
         }
-
+        
         function updateLabelSchoolName() {
             const schoolName = document.getElementById('schoolName').value;
             document.getElementById('labelSchoolName').textContent = schoolName;
         }
-
+        
         function closeModal() {
             document.getElementById('labelModal').classList.add('hidden');
         }
-
+        
         function printLabel() {
             window.print();
             labelsPrinted++;
             localStorage.setItem('labelsPrinted', labelsPrinted.toString());
             updateStats();
-            showNotification('🖨️ Label siap dicetak!');
+            showToast('🖨️ Label siap dicetak');
         }
-
-        function deleteBook(bookId) {
-            if (confirm('Yakin ingin menghapus buku ini?')) {
-                books = books.filter(b => b.id !== bookId);
-                saveBooks();
-                renderBooks();
-                updateStats();
-                showNotification('🗑️ Buku berhasil dihapus');
-            }
-        }
-
-        function exportData() {
-            const dataStr = JSON.stringify({
-                books: books,
-                labelsPrinted: labelsPrinted,
-                exportDate: new Date().toISOString()
-            }, null, 2);
+        
+        function exportToCSV() {
+            const headers = ['Kode', 'Judul', 'Pengarang', 'Penerbit', 'Tahun', 'Jumlah', 'ISBN', 'Kategori', 'Lokasi', 'Tanggal Ditambahkan'];
+            const rows = books.map(book => [
+                book.code,
+                book.title,
+                book.author,
+                book.publisher || '',
+                book.year || '',
+                book.quantity,
+                book.isbn || '',
+                book.category,
+                book.location || '',
+                new Date(book.created_at).toLocaleDateString('id-ID')
+            ]);
             
-            const blob = new Blob([dataStr], { type: 'application/json' });
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `perpustakaan-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `perpustakaan-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
             
-            showNotification('💾 Data berhasil di-export!');
+            showToast('💾 Data berhasil di-export');
         }
-
-        function importData(event) {
+        
+        async function importFromCSV(event) {
             const file = event.target.files[0];
             if (!file) return;
             
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
-                    const data = JSON.parse(e.target.result);
+                    const csv = e.target.result;
+                    const lines = csv.split('\n').filter(line => line.trim());
+                    const headers = lines[0].split(',');
                     
-                    if (confirm('Import data akan menimpa data yang ada. Lanjutkan?')) {
-                        books = data.books || [];
-                        labelsPrinted = data.labelsPrinted || 0;
+                    const newBooks = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const values = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(v => v.replace(/^"|"$/g, ''));
                         
-                        saveBooks();
-                        localStorage.setItem('labelsPrinted', labelsPrinted.toString());
+                        if (values.length >= 2) {
+                            newBooks.push({
+                                code: values[0] || generateBookCode(),
+                                title: values[1],
+                                author: values[2],
+                                publisher: values[3] || null,
+                                year: parseInt(values[4]) || null,
+                                quantity: parseInt(values[5]) || 1,
+                                isbn: values[6] || null,
+                                category: values[7] || 'Lainnya',
+                                location: values[8] || null
+                            });
+                        }
+                    }
+                    
+                    if (newBooks.length > 0) {
+                        const { error } = await supabase
+                            .from('books')
+                            .insert(newBooks);
                         
-                        renderBooks();
-                        updateStats();
+                        if (error) throw error;
                         
-                        showNotification('📥 Data berhasil di-import!');
+                        showToast(`📥 ${newBooks.length} buku berhasil di-import`);
                     }
                 } catch (error) {
-                    alert('Error: File tidak valid!');
+                    console.error('Error importing CSV:', error);
+                    showToast('❌ Gagal import CSV', 'error');
                 }
             };
             reader.readAsText(file);
             event.target.value = '';
         }
-
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'fixed top-4 right-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-4 rounded-xl shadow-2xl z-50 animate-slideDown';
-            notification.textContent = message;
-            document.body.appendChild(notification);
+        
+        function switchView(view) {
+            currentView = view;
+            const formSection = document.getElementById('formSection');
+            const listSection = document.getElementById('listSection');
+            const btnViewList = document.getElementById('btnViewList');
+            const btnViewAdd = document.getElementById('btnViewAdd');
+            const navList = document.getElementById('navList');
+            const navAdd = document.getElementById('navAdd');
+            
+            if (view === 'list') {
+                formSection.classList.add('hidden');
+                listSection.classList.remove('hidden');
+                btnViewList?.classList.add('bg-blue-600', 'text-white');
+                btnViewList?.classList.remove('text-gray-700');
+                btnViewAdd?.classList.remove('bg-blue-600', 'text-white');
+                btnViewAdd?.classList.add('text-gray-700');
+                navList.classList.add('text-blue-600');
+                navList.classList.remove('text-gray-400');
+                navAdd.classList.add('text-gray-400');
+                navAdd.classList.remove('text-blue-600');
+            } else {
+                formSection.classList.remove('hidden');
+                listSection.classList.add('hidden');
+                btnViewAdd?.classList.add('bg-blue-600', 'text-white');
+                btnViewAdd?.classList.remove('text-gray-700');
+                btnViewList?.classList.remove('bg-blue-600', 'text-white');
+                btnViewList?.classList.add('text-gray-700');
+                navAdd.classList.add('text-blue-600');
+                navAdd.classList.remove('text-gray-400');
+                navList.classList.add('text-gray-400');
+                navList.classList.remove('text-blue-600');
+            }
+        }
+        
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        
+        function updateOnlineStatus() {
+            const syncStatus = document.getElementById('syncStatus');
+            const syncStatusText = document.getElementById('syncStatusText');
+            const mobileStatus = document.getElementById('mobileStatus');
+            const mobileStatusText = document.getElementById('mobileStatusText');
+            
+            if (isOnline) {
+                syncStatus?.classList.remove('status-offline');
+                syncStatus?.classList.add('status-online');
+                if (syncStatusText) syncStatusText.textContent = 'Online';
+                if (mobileStatus) mobileStatus.className = 'w-2 h-2 rounded-full bg-green-500';
+                if (mobileStatusText) mobileStatusText.textContent = 'Online';
+            } else {
+                syncStatus?.classList.remove('status-online');
+                syncStatus?.classList.add('status-offline');
+                if (syncStatusText) syncStatusText.textContent = 'Offline';
+                if (mobileStatus) mobileStatus.className = 'w-2 h-2 rounded-full bg-red-500';
+                if (mobileStatusText) mobileStatusText.textContent = 'Offline';
+            }
+        }
+        
+        async function processSyncQueue() {
+            if (syncQueue.length === 0) return;
+            
+            const syncStatus = document.getElementById('syncStatus');
+            syncStatus?.classList.add('status-syncing');
+            
+            // Process queue
+            // Implementation depends on your offline strategy
+            
+            syncStatus?.classList.remove('status-syncing');
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast animate-slideUp ${type === 'error' ? 'bg-red-500' : 'bg-gray-900'} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
             
             setTimeout(() => {
-                notification.style.animation = 'fadeOut 0.5s ease-out forwards';
-                setTimeout(() => notification.remove(), 500);
+                toast.style.animation = 'fadeIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
-
-        // Close modal on ESC key
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Close modal on ESC
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeModal();
+                const menu = document.getElementById('mobileMenu');
+                if (!menu.classList.contains('hidden')) {
+                    toggleMenu();
+                }
             }
+        });
+        
+        // PWA Install prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
         });
     </script>
 </body>
