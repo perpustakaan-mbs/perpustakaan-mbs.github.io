@@ -679,57 +679,53 @@
         }
         
         async function handleFormSubmit(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<div class="spinner mx-auto"></div>';
-            submitBtn.disabled = true;
-            
-            const bookData = {
-                title: document.getElementById('title').value.trim(),
-                author: document.getElementById('author').value.trim(),
-                publisher: document.getElementById('publisher').value.trim() || null,
-                year: parseInt(document.getElementById('year').value) || null,
-                quantity: parseInt(document.getElementById('quantity').value),
-                isbn: document.getElementById('isbn').value.trim() || null,
-                category: document.getElementById('category').value,
-                location: document.getElementById('location').value.trim() || null,
-            };
-            
-            try {
-                if (editingBookId) {
-                    // Update existing book
-                    const { error } = await supabaseClient
-                        .from('books')
-                        .update(bookData)
-                        .eq('id', editingBookId);
-                    
-                    if (error) throw error;
-                    showToast('✅ Buku berhasil diupdate');
-                } else {
-                    // Add new book
-                    bookData.code = generateBookCode();
-                    const { error } = await supabaseClient
-                        .from('books')
-                        .insert([bookData]);
-                    
-                    if (error) throw error;
-                    showToast('✅ Buku berhasil ditambahkan');
-                }
-                
-                cancelEdit();
-                
-                if (window.innerWidth < 768) {
-                    switchView('list');
-                }
-            } catch (error) {
-                console.error('Error saving book:', error);
-                showToast('❌ Gagal menyimpan buku', 'error');
-            } finally {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
+  e.preventDefault();
+
+  const submitBtn = document.getElementById('submitBtn');
+  const originalText = submitBtn.innerHTML;
+
+  submitBtn.innerHTML = '<div class="spinner mx-auto"></div>';
+  submitBtn.disabled = true;
+
+  const bookData = {
+    title: document.getElementById('title').value.trim(),
+    author: document.getElementById('author').value.trim(),
+    publisher: document.getElementById('publisher').value.trim() || null,
+    year: parseInt(document.getElementById('year').value) || null,
+    quantity: parseInt(document.getElementById('quantity').value),
+    isbn: document.getElementById('isbn').value.trim() || null,
+    category: document.getElementById('category').value,
+    location: document.getElementById('location').value.trim() || null,
+  };
+
+  let success = false;
+
+  try {
+    if (editingBookId) {
+      const { error } = await supabaseClient.from('books').update(bookData).eq('id', editingBookId);
+      if (error) throw error;
+      showToast('✅ Buku berhasil diupdate');
+    } else {
+      bookData.code = generateBookCode();
+      const { error } = await supabaseClient.from('books').insert([bookData]);
+      if (error) throw error;
+      showToast('✅ Buku berhasil ditambahkan');
+    }
+
+    success = true;
+  } catch (error) {
+    console.error('Error saving book:', error);
+    showToast('❌ Gagal menyimpan buku', 'error');
+  } finally {
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+
+    // panggil setelah span submitBtnText balik
+    if (success) {
+      cancelEdit();
+      if (window.innerWidth < 768) switchView('list');
+    }
+  }
         }
         
         function generateBookCode() {
