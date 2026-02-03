@@ -81,7 +81,7 @@
         
         /* Content padding untuk mobile */
         .content-wrapper {
-            padding-bottom: calc(60px + env(safe-area-inset-bottom));
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
         }
         
         @media (min-width: 768px) {
@@ -204,7 +204,12 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 animate-fadeIn">
             <div class="bg-white rounded-xl p-4 border border-gray-200">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl">📚</span>
+                    <div class="bg-blue-50 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none">
+                            <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                        </svg>
+                    </div>
                     <div id="booksLoader" class="spinner hidden"></div>
                 </div>
                 <p class="text-xs text-gray-600 mb-1">Total Buku</p>
@@ -213,7 +218,12 @@
             
             <div class="bg-white rounded-xl p-4 border border-gray-200">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl">🏷️</span>
+                    <div class="bg-purple-50 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none">
+                            <path d="M20.59 13.41L13.42 20.58C13.2343 20.766 13.0137 20.9135 12.7709 21.0141C12.5281 21.1148 12.2678 21.1666 12.005 21.1666C11.7422 21.1666 11.4819 21.1148 11.2391 21.0141C10.9963 20.9135 10.7757 20.766 10.59 20.58L2 12V2H12L20.59 10.59C20.9625 10.9647 21.1716 11.4716 21.1716 12C21.1716 12.5284 20.9625 13.0353 20.59 13.41Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/>
+                            <path d="M7 7H7.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
                 </div>
                 <p class="text-xs text-gray-600 mb-1">Kategori</p>
                 <p id="totalCategories" class="text-2xl font-semibold text-gray-900">0</p>
@@ -221,7 +231,12 @@
             
             <div class="bg-white rounded-xl p-4 border border-gray-200">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl">📅</span>
+                    <div class="bg-green-50 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                            <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
                 </div>
                 <p class="text-xs text-gray-600 mb-1">Bulan Ini</p>
                 <p id="booksThisMonth" class="text-2xl font-semibold text-gray-900">0</p>
@@ -229,7 +244,13 @@
             
             <div class="bg-white rounded-xl p-4 border border-gray-200">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-2xl">🖨️</span>
+                    <div class="bg-orange-50 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-orange-600" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 9V2H18V9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6 18H4C3.46957 18 2.96086 17.7893 2.58579 17.4142C2.21071 17.0391 2 16.5304 2 16V11C2 10.4696 2.21071 9.96086 2.58579 9.58579C2.96086 9.21071 3.46957 9 4 9H20C20.5304 9 21.0391 9.21071 21.4142 9.58579C21.7893 9.96086 22 10.4696 22 11V16C22 16.5304 21.7893 17.0391 21.4142 17.4142C21.0391 17.7893 20.5304 18 20 18H18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.1"/>
+                            <rect x="6" y="14" width="12" height="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
+                        </svg>
+                    </div>
                 </div>
                 <p class="text-xs text-gray-600 mb-1">Label</p>
                 <p id="labelCount" class="text-2xl font-semibold text-gray-900">0</p>
@@ -249,7 +270,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <!-- Form Input Buku -->
-            <div id="formSection" class="md:col-span-1 hidden md:block animate-slideUp">
+            <div id="formSection" class="md:col-span-1 hidden md:block animate-slideUp pb-20 md:pb-0">
                 <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
                     <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <svg class="w-5 h-5 mr-2 text-blue-600" viewBox="0 0 24 24" fill="none">
@@ -338,7 +359,7 @@
                         </h2>
                         
                         <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
-                            <input type="text" id="searchInput" placeholder="🔍 Cari buku..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
+                            <input type="text" id="searchInput" placeholder="Cari buku..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                             
                             <select id="filterCategory" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
                                 <option value="">Semua Kategori</option>
@@ -649,13 +670,13 @@
                             
                             <div class="flex flex-wrap gap-1.5 mb-2">
                                 <span class="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">${book.category}</span>
-                                ${book.location ? `<span class="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs font-medium">📍 ${book.location}</span>` : ''}
+                                ${book.location ? `<span class="bg-green-50 text-green-700 px-2 py-0.5 rounded text-xs font-medium inline-flex items-center"><svg class="w-3 h-3 mr-0.5" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.3"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="2"/></svg>${book.location}</span>` : ''}
                             </div>
                             
                             <div class="grid grid-cols-2 gap-1 text-xs text-gray-600">
-                                ${book.publisher ? `<div>📖 ${book.publisher}</div>` : ''}
-                                ${book.year ? `<div>📅 ${book.year}</div>` : ''}
-                                <div>📦 ${book.quantity} eks</div>
+                                ${book.publisher ? `<div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2"/><path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/></svg>${book.publisher}</div>` : ''}
+                                ${book.year ? `<div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" stroke-width="2"/></svg>${book.year}</div>` : ''}
+                                <div class="flex items-center"><svg class="w-3 h-3 mr-1 text-gray-400" viewBox="0 0 24 24" fill="none"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/></svg>${book.quantity} eks</div>
                                 <div class="mono font-medium text-blue-600">${book.code}</div>
                             </div>
                         </div>
