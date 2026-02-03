@@ -154,6 +154,65 @@
 </head>
 <body class="bg-gray-50">
     
+    <!-- Login Page -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-8 animate-slideUp">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-xl mb-4">
+                    <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.2"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Perpustakaan</h1>
+                <p class="text-gray-600">Masuk untuk melanjutkan</p>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-xl p-8 animate-slideUp" style="animation-delay: 0.1s;">
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            required 
+                            placeholder="admin@perpus.local"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            required 
+                            placeholder="••••••••"
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm"
+                        >
+                    </div>
+                    
+                    <div id="loginError" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"></div>
+                    
+                    <button 
+                        type="submit" 
+                        id="loginBtn"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-6 rounded-xl transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center"
+                    >
+                        <span>Masuk</span>
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center text-xs text-gray-500">
+                    Sistem Manajemen Perpustakaan Sekolah
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main App (Protected) -->
+    <div id="mainApp" class="hidden">
+    
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-3 md:py-4">
@@ -189,6 +248,14 @@
                                 <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                             <span>Import</span>
+                        </button>
+                        <button onclick="handleLogout()" class="px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition flex items-center space-x-1.5">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Keluar</span>
                         </button>
                     </div>
                     <input type="file" id="importCSV" accept=".csv" onchange="importFromCSV(event)" class="hidden">
@@ -443,6 +510,17 @@
                 </button>
                 
                 <div class="border-t border-gray-200 pt-3">
+                    <button onclick="handleLogout(); toggleMenu();" class="w-full flex items-center space-x-3 px-4 py-3 hover:bg-red-50 rounded-lg transition btn-touch">
+                        <svg class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="font-medium text-red-600">Keluar</span>
+                    </button>
+                </div>
+                
+                <div class="border-t border-gray-200 pt-3">
                     <div class="flex items-center justify-between px-4 py-2">
                         <span class="text-sm text-gray-600">Database</span>
                         <div class="flex items-center space-x-2">
@@ -512,6 +590,8 @@
         </div>
     </div>
 
+    </div><!-- End mainApp -->
+
     <script>
         // Supabase Configuration
         const SUPABASE_URL = 'https://vxpgiedokvkbtcfpbbay.supabase.co';
@@ -527,29 +607,129 @@
         let syncQueue = [];
         let currentView = 'list';
         let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
+        let currentUser = null;
         
         // Initialize
         document.addEventListener('DOMContentLoaded', async function() {
-            await loadBooks();
-            setupRealtimeSubscription();
-            setupEventListeners();
-            
-            // Online/Offline listeners for sync queue
-            window.addEventListener('online', () => {
-                isOnline = true;
-                processSyncQueue();
-            });
-            
-            window.addEventListener('offline', () => {
-                isOnline = false;
-            });
+            // Check authentication first
+            await checkAuth();
         });
+        
+        async function checkAuth() {
+            try {
+                const { data: { session }, error } = await supabaseClient.auth.getSession();
+                
+                if (error) throw error;
+                
+                if (session) {
+                    currentUser = session.user;
+                    showMainApp();
+                    await loadBooks();
+                    setupRealtimeSubscription();
+                    setupEventListeners();
+                    
+                    // Online/Offline listeners for sync queue
+                    window.addEventListener('online', () => {
+                        isOnline = true;
+                        processSyncQueue();
+                    });
+                    
+                    window.addEventListener('offline', () => {
+                        isOnline = false;
+                    });
+                } else {
+                    showLoginPage();
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                showLoginPage();
+            }
+        }
+        
+        function showLoginPage() {
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+        }
+        
+        function showMainApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+        }
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('loginError');
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<div class="spinner mx-auto"></div>';
+            errorMsg.classList.add('hidden');
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                currentUser = data.user;
+                showMainApp();
+                await loadBooks();
+                setupRealtimeSubscription();
+                setupEventListeners();
+                
+                // Online/Offline listeners
+                window.addEventListener('online', () => {
+                    isOnline = true;
+                    processSyncQueue();
+                });
+                
+                window.addEventListener('offline', () => {
+                    isOnline = false;
+                });
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMsg.textContent = error.message === 'Invalid login credentials' 
+                    ? 'Email atau password salah' 
+                    : 'Gagal login: ' + error.message;
+                errorMsg.classList.remove('hidden');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>Masuk</span>';
+            }
+        }
+        
+        async function handleLogout() {
+            if (!confirm('Yakin ingin keluar?')) return;
+            
+            try {
+                await supabaseClient.auth.signOut();
+                currentUser = null;
+                books = [];
+                showLoginPage();
+                showToast('👋 Berhasil logout');
+            } catch (error) {
+                console.error('Logout error:', error);
+                showToast('❌ Gagal logout', 'error');
+            }
+        }
         
         function setupEventListeners() {
             document.getElementById('searchInput').addEventListener('input', debounce(renderBooks, 300));
             document.getElementById('filterCategory').addEventListener('change', renderBooks);
             document.getElementById('schoolName').addEventListener('input', updateLabelSchoolName);
             document.getElementById('bookForm').addEventListener('submit', handleFormSubmit);
+            
+            // Login form listener
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
         }
         
         async function loadBooks() {
