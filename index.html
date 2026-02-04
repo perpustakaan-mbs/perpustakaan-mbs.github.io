@@ -32,7 +32,7 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 50; padding-bottom: env(safe-area-inset-bottom); }
-        .content-wrapper { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+        .content-wrapper { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
         
         @media (min-width: 768px) {
             .bottom-nav { display: none; }
@@ -441,7 +441,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Sekolah (untuk Label)</label>
-                    <input type="text" id="settingsSchoolName" placeholder="SMA NEGERI 1 JAKARTA" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
+                    <input type="text" id="settingsSchoolName" placeholder="MBS TANGGUL" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
                     <p class="text-xs text-gray-500 mt-1">Akan otomatis tersimpan untuk semua label</p>
                 </div>
                 
@@ -536,7 +536,7 @@
         let currentBook = null;
         let currentUser = null;
         let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
-        let settings = JSON.parse(localStorage.getItem('librarySettings') || '{"schoolName": "SMA NEGERI 1 JAKARTA"}');
+        let settings = JSON.parse(localStorage.getItem('librarySettings') || '{"schoolName": "MBS TANGGUL"}');
         let selectMode = false;
         let selectedBooks = new Set();
         let editingBookId = null;
@@ -984,83 +984,52 @@
             }
             
             const selectedBooksArray = Array.from(selectedBooks).map(id => books.find(b => b.id === id));
+            const schoolName = settings.schoolName || 'MBS TANGGUL';
             
-            // Generate batch print HTML
+            // Create print window
             const printWindow = window.open('', '_blank');
-            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
             
-            let printHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Print Labels</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-                        .label-page { page-break-after: always; }
-                        .label { 
-                            width: 8cm; 
-                            height: 10cm; 
-                            border: 2px solid #000; 
-                            padding: 15px; 
-                            margin: 10px auto; 
-                            text-align: center;
-                            box-sizing: border-box;
-                        }
-                        .label h3 { font-size: 10px; margin: 0 0 5px 0; border-bottom: 1px solid #000; padding-bottom: 5px; }
-                        .label h2 { font-size: 12px; margin: 0 0 10px 0; }
-                        .label p { font-size: 9px; margin: 3px 0; text-align: left; }
-                        .label .qr { margin: 10px 0; }
-                        @media print {
-                            body { margin: 0; padding: 0; }
-                            .label { margin: 0; page-break-inside: avoid; }
-                        }
-                    </style>
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-                </head>
-                <body>
-            `;
+            // Build HTML string properly
+            let htmlContent = '<!DOCTYPE html><html><head><title>Print Labels</title>';
+            htmlContent += '<style>';
+            htmlContent += 'body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }';
+            htmlContent += '.label { width: 8cm; height: 10cm; border: 2px solid #000; padding: 15px; margin: 10px auto; text-align: center; box-sizing: border-box; page-break-inside: avoid; }';
+            htmlContent += '.label h3 { font-size: 10px; margin: 0 0 5px 0; border-bottom: 1px solid #000; padding-bottom: 5px; }';
+            htmlContent += '.label h2 { font-size: 12px; margin: 0 0 10px 0; }';
+            htmlContent += '.label p { font-size: 9px; margin: 3px 0; text-align: left; }';
+            htmlContent += '.label .qr { margin: 10px 0; }';
+            htmlContent += '@media print { body { margin: 0; padding: 0; } .label { margin: 0; } }';
+            htmlContent += '</style>';
+            htmlContent += '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></scr' + 'ipt>';
+            htmlContent += '</head><body>';
             
             selectedBooksArray.forEach((book, index) => {
-                const qrData = JSON.stringify({
-                    code: book.code,
-                    title: book.title,
-                    author: book.author,
-                    isbn: book.isbn
-                });
-                
-                printHTML += `
-                    <div class="label">
-                        <h3>MILIK PERPUSTAKAAN</h3>
-                        <h2>${schoolName}</h2>
-                        <p><strong>Judul:</strong> ${book.title}</p>
-                        <p><strong>Pengarang:</strong> ${book.author}</p>
-                        <p><strong>Kode:</strong> ${book.code}</p>
-                        <div class="qr" id="qr-${index}"></div>
-                        <p style="font-family: monospace; font-size: 8px;">${book.isbn || ''}</p>
-                        <p style="font-size: 8px; color: #666;">${new Date().toLocaleDateString('id-ID')}</p>
-                    </div>
-                `;
+                htmlContent += '<div class="label">';
+                htmlContent += '<h3>MILIK PERPUSTAKAAN</h3>';
+                htmlContent += '<h2>' + schoolName + '</h2>';
+                htmlContent += '<p><strong>Judul:</strong> ' + book.title + '</p>';
+                htmlContent += '<p><strong>Pengarang:</strong> ' + book.author + '</p>';
+                htmlContent += '<p><strong>Kode:</strong> ' + book.code + '</p>';
+                htmlContent += '<div class="qr" id="qr-' + index + '"></div>';
+                htmlContent += '<p style="font-family: monospace; font-size: 8px;">' + (book.isbn || '') + '</p>';
+                htmlContent += '<p style="font-size: 8px; color: #666;">' + new Date().toLocaleDateString('id-ID') + '</p>';
+                htmlContent += '</div>';
             });
             
-            printHTML += `
-                    <script>
-                        window.onload = function() {
-                            ${selectedBooksArray.map((book, index) => `
-                                new QRCode(document.getElementById('qr-${index}'), {
-                                    text: '${JSON.stringify({code: book.code, title: book.title, author: book.author, isbn: book.isbn}).replace(/'/g, "\\'")}',
-                                    width: 80,
-                                    height: 80
-                                });
-                            `).join('\n')}
-                            
-                            setTimeout(() => window.print(), 1000);
-                        };
-                    <\/script>
-                </body>
-                </html>
-            `;
+            htmlContent += '<script>';
+            htmlContent += 'window.onload = function() {';
+            selectedBooksArray.forEach((book, index) => {
+                const qrData = JSON.stringify({code: book.code, title: book.title, author: book.author, isbn: book.isbn});
+                htmlContent += 'new QRCode(document.getElementById("qr-' + index + '"), {';
+                htmlContent += 'text: ' + JSON.stringify(qrData) + ',';
+                htmlContent += 'width: 80, height: 80 });';
+            });
+            htmlContent += 'setTimeout(function() { window.print(); }, 1000);';
+            htmlContent += '};';
+            htmlContent += '</scr' + 'ipt>';
+            htmlContent += '</body></html>';
             
-            printWindow.document.write(printHTML);
+            printWindow.document.write(htmlContent);
             printWindow.document.close();
             
             labelsPrinted += selectedBooks.size;
@@ -1075,7 +1044,7 @@
             currentBook = books.find(b => b.id === bookId);
             if (!currentBook) return;
             
-            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
+            const schoolName = settings.schoolName || 'MBS TANGGUL';
             
             document.getElementById('labelSchoolName').textContent = schoolName;
             document.getElementById('labelTitle').textContent = currentBook.title;
