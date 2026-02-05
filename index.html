@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="theme-color" content="#1e40af">
-    <title>Perpustakaan</title>
+    <title>Perpustakaan Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -58,6 +60,50 @@
         
         .checkbox-item { cursor: pointer; user-select: none; }
         .checkbox-item:hover { background: #f8fafc; }
+        
+        /* Barcode Scanner Styles */
+        #barcode-scanner {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            height: 480px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #000;
+        }
+        
+        #barcode-scanner video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .barcode-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 40%;
+            border: 3px solid #3b82f6;
+            border-radius: 8px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+        
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            animation: scan 2s ease-in-out infinite;
+        }
+        
+        @keyframes scan {
+            0%, 100% { top: 0; }
+            50% { top: 100%; }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -72,7 +118,7 @@
                         <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.2"/>
                     </svg>
                 </div>
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Perpustakaan</h1>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Perpustakaan Pro</h1>
                 <p class="text-gray-600">Sistem Manajemen Buku Profesional</p>
             </div>
             
@@ -113,7 +159,7 @@
                             </svg>
                         </div>
                         <div>
-                            <h1 class="text-lg md:text-xl font-semibold text-gray-900">Perpustakaan</h1>
+                            <h1 class="text-lg md:text-xl font-semibold text-gray-900">Perpustakaan Pro</h1>
                             <p class="text-xs text-gray-500 hidden md:block">Sistem Manajemen Profesional</p>
                         </div>
                     </div>
@@ -215,8 +261,10 @@
                 </div>
             </div>
 
+            <!-- Mobile View Switcher - REMOVED, using modal instead -->
+
             <!-- Main Content - Full Width -->
-            <div class="w-full pb-20">
+            <div class="w-full">
                     <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-5">
                         <div class="flex flex-col space-y-3 mb-4">
                             <div class="flex items-center justify-between">
@@ -361,7 +409,7 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Sekolah (untuk Label)</label>
-                    <input type="text" id="settingsSchoolName" placeholder="MBS TANGGUL" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
+                    <input type="text" id="settingsSchoolName" placeholder="SMA NEGERI 1 JAKARTA" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
                     <p class="text-xs text-gray-500 mt-1">Akan otomatis tersimpan untuk semua label</p>
                 </div>
                 
@@ -488,7 +536,17 @@
                 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">ISBN</label>
-                    <input type="text" id="isbn" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm mono">
+                    <div class="flex gap-2">
+                        <input type="text" id="isbn" class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm mono">
+                        <button type="button" onclick="openBarcodeScanner()" class="px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition btn-touch flex items-center gap-2 whitespace-nowrap">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
+                                <path d="M7 7v10M10 7v10M13 7v10M16 7v10" stroke-width="2"/>
+                            </svg>
+                            <span class="hidden sm:inline">Scan</span>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Atau scan barcode ISBN untuk auto-fill data buku</p>
                 </div>
                 
                 <div>
@@ -510,6 +568,45 @@
                 </div>
                 
                 <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Cover Buku</label>
+                    <div class="flex flex-col gap-3">
+                        <!-- Cover Preview -->
+                        <div id="coverPreview" class="hidden">
+                            <div class="relative w-32 h-48 rounded-lg overflow-hidden border-2 border-gray-200">
+                                <img id="coverImage" src="" alt="Cover" class="w-full h-full object-cover">
+                                <button type="button" onclick="removeCover()" class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center btn-touch">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Options -->
+                        <div class="flex gap-2">
+                            <input type="file" id="coverUpload" accept="image/*" class="hidden" onchange="handleCoverUpload(event)">
+                            <button type="button" onclick="document.getElementById('coverUpload').click()" class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium rounded-lg transition btn-touch flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" stroke-width="2"/>
+                                    <circle cx="8.5" cy="8.5" r="1.5" stroke-width="2"/>
+                                    <path d="M21 15l-5-5L5 21" stroke-width="2"/>
+                                </svg>
+                                Upload
+                            </button>
+                            <button type="button" id="fetchCoverBtn" onclick="fetchCoverFromGoogle()" class="flex-1 px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 text-sm font-medium rounded-lg transition btn-touch flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-width="2"/>
+                                    <path d="M9 12l2 2 4-4" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                Auto
+                            </button>
+                        </div>
+                        <input type="hidden" id="coverUrl" value="">
+                        <p class="text-xs text-gray-500">Upload gambar atau gunakan Auto untuk mengambil dari Google Books</p>
+                    </div>
+                </div>
+                
+                <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Lokasi Rak</label>
                     <input type="text" id="location" placeholder="Contoh: A-12" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition text-sm">
                 </div>
@@ -526,6 +623,46 @@
         </div>
     </div>
 
+    <!-- Barcode Scanner Modal -->
+    <div id="barcodeScannerModal" class="hidden fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl p-6 animate-scaleIn" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Scan Barcode ISBN</h3>
+                <button onclick="closeBarcodeScanner()" class="text-gray-400 hover:text-gray-600 transition btn-touch">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="barcode-scanner" class="mb-4">
+                <div class="barcode-overlay">
+                    <div class="scanner-line"></div>
+                </div>
+            </div>
+            
+            <div id="scannerStatus" class="text-center mb-4">
+                <p class="text-sm text-gray-600">Arahkan kamera ke barcode ISBN</p>
+                <div id="scannerResult" class="hidden mt-2">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <p class="text-sm font-semibold text-green-800">✅ Barcode terdeteksi!</p>
+                        <p class="text-xs text-green-600 mt-1">ISBN: <span id="scannedISBN" class="mono font-bold"></span></p>
+                        <p class="text-xs text-gray-600 mt-2">Mengambil data dari Google Books...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-3">
+                <button onclick="closeBarcodeScanner()" class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium rounded-xl transition btn-touch">
+                    Tutup
+                </button>
+                <button onclick="manualISBN()" class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition btn-touch">
+                    Input Manual
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Supabase Config
         const SUPABASE_URL = 'https://vxpgiedokvkbtcfpbbay.supabase.co';
@@ -537,14 +674,265 @@
         let currentBook = null;
         let currentUser = null;
         let labelsPrinted = parseInt(localStorage.getItem('labelsPrinted') || '0');
-        let settings = JSON.parse(localStorage.getItem('librarySettings') || '{"schoolName": "MBS TANGGUL"}');
+        let settings = JSON.parse(localStorage.getItem('librarySettings') || '{"schoolName": "SMA NEGERI 1 JAKARTA"}');
         let selectMode = false;
         let selectedBooks = new Set();
         let editingBookId = null;
         let confirmCallback = null;
+        let barcodeScanner = null;
         
         // Initialize
         document.addEventListener('DOMContentLoaded', checkAuth);
+        
+        // ========================================
+        // BARCODE SCANNER & GOOGLE BOOKS API
+        // ========================================
+        
+        function openBarcodeScanner() {
+            document.getElementById('barcodeScannerModal').classList.remove('hidden');
+            startBarcodeScanner();
+        }
+        
+        function closeBarcodeScanner() {
+            document.getElementById('barcodeScannerModal').classList.add('hidden');
+            stopBarcodeScanner();
+        }
+        
+        function manualISBN() {
+            closeBarcodeScanner();
+            document.getElementById('isbn').focus();
+        }
+        
+        function startBarcodeScanner() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToast('❌ Kamera tidak didukung di browser ini', 'error');
+                return;
+            }
+            
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#barcode-scanner'),
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment"
+                    }
+                },
+                decoder: {
+                    readers: [
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_128_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ]
+                },
+                locate: true
+            }, function(err) {
+                if (err) {
+                    console.error('Barcode scanner error:', err);
+                    showToast('❌ Gagal membuka kamera', 'error');
+                    closeBarcodeScanner();
+                    return;
+                }
+                Quagga.start();
+            });
+            
+            Quagga.onDetected(onBarcodeDetected);
+        }
+        
+        function stopBarcodeScanner() {
+            if (Quagga) {
+                Quagga.stop();
+                Quagga.offDetected(onBarcodeDetected);
+            }
+        }
+        
+        async function onBarcodeDetected(result) {
+            if (result && result.codeResult && result.codeResult.code) {
+                const isbn = result.codeResult.code;
+                
+                // Show detected result
+                document.getElementById('scannedISBN').textContent = isbn;
+                document.getElementById('scannerResult').classList.remove('hidden');
+                
+                // Stop scanner
+                stopBarcodeScanner();
+                
+                // Fetch book data from Google Books
+                await fetchBookDataFromISBN(isbn);
+                
+                // Close scanner modal
+                setTimeout(() => {
+                    closeBarcodeScanner();
+                }, 1500);
+            }
+        }
+        
+        async function fetchBookDataFromISBN(isbn) {
+            try {
+                const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+                const data = await response.json();
+                
+                if (data.items && data.items.length > 0) {
+                    const book = data.items[0].volumeInfo;
+                    
+                    // Auto-fill form
+                    document.getElementById('isbn').value = isbn;
+                    
+                    if (book.title) {
+                        document.getElementById('title').value = book.title;
+                    }
+                    
+                    if (book.authors && book.authors.length > 0) {
+                        document.getElementById('author').value = book.authors.join(', ');
+                    }
+                    
+                    if (book.publisher) {
+                        document.getElementById('publisher').value = book.publisher;
+                    }
+                    
+                    if (book.publishedDate) {
+                        const year = book.publishedDate.split('-')[0];
+                        document.getElementById('year').value = year;
+                    }
+                    
+                    // Auto-fetch cover image
+                    if (book.imageLinks) {
+                        const coverUrl = book.imageLinks.large || 
+                                       book.imageLinks.medium || 
+                                       book.imageLinks.thumbnail ||
+                                       book.imageLinks.smallThumbnail;
+                        
+                        if (coverUrl) {
+                            const secureUrl = coverUrl.replace('http:', 'https:');
+                            showCoverPreview(secureUrl);
+                            document.getElementById('coverUrl').value = secureUrl;
+                        }
+                    }
+                    
+                    // Show success toast
+                    showToast('✅ Data buku & cover berhasil diisi otomatis!');
+                } else {
+                    showToast('⚠️ Buku tidak ditemukan di Google Books. Isi manual ya!', 'error');
+                    document.getElementById('isbn').value = isbn;
+                }
+            } catch (error) {
+                console.error('Google Books API error:', error);
+                showToast('❌ Gagal mengambil data buku', 'error');
+                document.getElementById('isbn').value = isbn;
+            }
+        }
+        
+        // ========================================
+        // END BARCODE SCANNER
+        // ========================================
+        
+        // ========================================
+        // BOOK COVER IMAGE HANDLING
+        // ========================================
+        
+        let currentCoverUrl = null;
+        let currentCoverFile = null;
+        
+        function handleCoverUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showToast('❌ File harus berupa gambar', 'error');
+                return;
+            }
+            
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('❌ Ukuran gambar maksimal 2MB', 'error');
+                return;
+            }
+            
+            currentCoverFile = file;
+            
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                showCoverPreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function showCoverPreview(url) {
+            document.getElementById('coverImage').src = url;
+            document.getElementById('coverPreview').classList.remove('hidden');
+            currentCoverUrl = url;
+        }
+        
+        function removeCover() {
+            document.getElementById('coverPreview').classList.add('hidden');
+            document.getElementById('coverImage').src = '';
+            document.getElementById('coverUrl').value = '';
+            document.getElementById('coverUpload').value = '';
+            currentCoverUrl = null;
+            currentCoverFile = null;
+        }
+        
+        async function fetchCoverFromGoogle() {
+            const isbn = document.getElementById('isbn').value.trim();
+            
+            if (!isbn) {
+                showToast('❌ Isi ISBN dulu atau scan barcode', 'error');
+                return;
+            }
+            
+            const fetchBtn = document.getElementById('fetchCoverBtn');
+            const originalHTML = fetchBtn.innerHTML;
+            fetchBtn.disabled = true;
+            fetchBtn.innerHTML = '<div class="spinner mx-auto"></div>';
+            
+            try {
+                const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+                const data = await response.json();
+                
+                if (data.items && data.items.length > 0) {
+                    const book = data.items[0].volumeInfo;
+                    
+                    if (book.imageLinks) {
+                        // Get highest quality image available
+                        const coverUrl = book.imageLinks.large || 
+                                       book.imageLinks.medium || 
+                                       book.imageLinks.thumbnail ||
+                                       book.imageLinks.smallThumbnail;
+                        
+                        if (coverUrl) {
+                            // Use HTTPS
+                            const secureUrl = coverUrl.replace('http:', 'https:');
+                            showCoverPreview(secureUrl);
+                            document.getElementById('coverUrl').value = secureUrl;
+                            showToast('✅ Cover berhasil diambil!');
+                        } else {
+                            showToast('⚠️ Cover tidak tersedia', 'error');
+                        }
+                    } else {
+                        showToast('⚠️ Cover tidak ditemukan', 'error');
+                    }
+                } else {
+                    showToast('⚠️ Buku tidak ditemukan', 'error');
+                }
+            } catch (error) {
+                console.error('Google Books API error:', error);
+                showToast('❌ Gagal mengambil cover', 'error');
+            } finally {
+                fetchBtn.disabled = false;
+                fetchBtn.innerHTML = originalHTML;
+            }
+        }
+        
+        // ========================================
+        // END BOOK COVER HANDLING
+        // ========================================
         
         function openBookModal(bookId = null) {
             if (bookId) {
@@ -565,6 +953,12 @@
                 document.getElementById('isbn').value = book.isbn || '';
                 document.getElementById('category').value = book.category;
                 document.getElementById('location').value = book.location || '';
+                
+                // Show cover if exists
+                if (book.cover_url) {
+                    document.getElementById('coverUrl').value = book.cover_url;
+                    showCoverPreview(book.cover_url);
+                }
             } else {
                 // Add mode
                 editingBookId = null;
@@ -572,6 +966,7 @@
                 document.getElementById('submitBtnText').textContent = 'Simpan Buku';
                 document.getElementById('bookForm').reset();
                 document.getElementById('editBookId').value = '';
+                removeCover();
             }
             
             document.getElementById('bookModal').classList.remove('hidden');
@@ -763,6 +1158,7 @@
                 isbn: document.getElementById('isbn').value.trim() || null,
                 category: document.getElementById('category').value,
                 location: document.getElementById('location').value.trim() || null,
+                cover_url: document.getElementById('coverUrl').value || null
             };
             
             try {
@@ -853,6 +1249,12 @@
                         ${selectMode ? `
                             <div class="pt-1">
                                 <input type="checkbox" id="check-${book.id}" ${selectedBooks.has(book.id) ? 'checked' : ''} class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" onclick="event.stopPropagation()">
+                            </div>
+                        ` : ''}
+                        
+                        ${book.cover_url && !selectMode ? `
+                            <div class="flex-shrink-0">
+                                <img src="${book.cover_url}" alt="${book.title}" class="w-16 h-24 object-cover rounded border border-gray-200" onerror="this.style.display='none'">
                             </div>
                         ` : ''}
                         
@@ -1064,7 +1466,7 @@
             }
             
             const selectedBooksArray = Array.from(selectedBooks).map(id => books.find(b => b.id === id));
-            const schoolName = settings.schoolName || 'MBS TANGGUL';
+            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
             
             // Create print window
             const printWindow = window.open('', '_blank');
@@ -1072,16 +1474,19 @@
             // Build HTML string properly
             let htmlContent = '<!DOCTYPE html><html><head><title>Print Labels</title>';
             htmlContent += '<style>';
-            htmlContent += 'body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }';
-            htmlContent += '.label { width: 8cm; height: 10cm; border: 2px solid #000; padding: 15px; margin: 10px auto; text-align: center; box-sizing: border-box; page-break-inside: avoid; }';
-            htmlContent += '.label h3 { font-size: 10px; margin: 0 0 5px 0; border-bottom: 1px solid #000; padding-bottom: 5px; }';
-            htmlContent += '.label h2 { font-size: 12px; margin: 0 0 10px 0; }';
-            htmlContent += '.label p { font-size: 9px; margin: 3px 0; text-align: left; }';
-            htmlContent += '.label .qr { margin: 10px 0; }';
-            htmlContent += '@media print { body { margin: 0; padding: 0; } .label { margin: 0; } }';
+            htmlContent += 'body { font-family: Arial, sans-serif; margin: 0; padding: 10mm; }';
+            htmlContent += '.label-container { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; width: 100%; }';
+            htmlContent += '.label { width: 85mm; height: 55mm; border: 2px solid #000; padding: 8px; box-sizing: border-box; page-break-inside: avoid; }';
+            htmlContent += '.label h3 { font-size: 8px; margin: 0 0 3px 0; border-bottom: 1px solid #000; padding-bottom: 3px; text-align: center; }';
+            htmlContent += '.label h2 { font-size: 9px; margin: 0 0 5px 0; text-align: center; font-weight: bold; }';
+            htmlContent += '.label p { font-size: 7px; margin: 2px 0; text-align: left; }';
+            htmlContent += '.label .qr { text-align: center; margin: 5px 0; }';
+            htmlContent += '.label .qr canvas { width: 60px !important; height: 60px !important; }';
+            htmlContent += '@media print { body { margin: 0; padding: 10mm; } .label { page-break-inside: avoid; } }';
             htmlContent += '</style>';
             htmlContent += '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></scr' + 'ipt>';
             htmlContent += '</head><body>';
+            htmlContent += '<div class="label-container">';
             
             selectedBooksArray.forEach((book, index) => {
                 htmlContent += '<div class="label">';
@@ -1091,18 +1496,19 @@
                 htmlContent += '<p><strong>Pengarang:</strong> ' + book.author + '</p>';
                 htmlContent += '<p><strong>Kode:</strong> ' + book.code + '</p>';
                 htmlContent += '<div class="qr" id="qr-' + index + '"></div>';
-                htmlContent += '<p style="font-family: monospace; font-size: 8px;">' + (book.isbn || '') + '</p>';
-                htmlContent += '<p style="font-size: 8px; color: #666;">' + new Date().toLocaleDateString('id-ID') + '</p>';
+                htmlContent += '<p style="font-family: monospace; font-size: 6px; text-align: center;">' + (book.isbn || '') + '</p>';
+                htmlContent += '<p style="font-size: 6px; color: #666; text-align: center;">' + new Date().toLocaleDateString('id-ID') + '</p>';
                 htmlContent += '</div>';
             });
             
+            htmlContent += '</div>';
             htmlContent += '<script>';
             htmlContent += 'window.onload = function() {';
             selectedBooksArray.forEach((book, index) => {
                 const qrData = JSON.stringify({code: book.code, title: book.title, author: book.author, isbn: book.isbn});
                 htmlContent += 'new QRCode(document.getElementById("qr-' + index + '"), {';
                 htmlContent += 'text: ' + JSON.stringify(qrData) + ',';
-                htmlContent += 'width: 80, height: 80 });';
+                htmlContent += 'width: 60, height: 60 });';
             });
             htmlContent += 'setTimeout(function() { window.print(); }, 1000);';
             htmlContent += '};';
@@ -1124,7 +1530,7 @@
             currentBook = books.find(b => b.id === bookId);
             if (!currentBook) return;
             
-            const schoolName = settings.schoolName || 'MBS TANGGUL';
+            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
             
             document.getElementById('labelSchoolName').textContent = schoolName;
             document.getElementById('labelTitle').textContent = currentBook.title;
@@ -1160,7 +1566,65 @@
         }
         
         function printLabel() {
-            window.print();
+            const printWindow = window.open('', '_blank');
+            const schoolName = settings.schoolName || 'SMA NEGERI 1 JAKARTA';
+            
+            let htmlContent = '<!DOCTYPE html><html><head><title>Print Label</title>';
+            htmlContent += '<style>';
+            htmlContent += 'body { font-family: Arial, sans-serif; margin: 0; padding: 10mm; }';
+            htmlContent += '.label-container { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; width: 100%; }';
+            htmlContent += '.label { width: 85mm; height: 55mm; border: 2px solid #000; padding: 8px; box-sizing: border-box; page-break-inside: avoid; }';
+            htmlContent += '.label h3 { font-size: 8px; margin: 0 0 3px 0; border-bottom: 1px solid #000; padding-bottom: 3px; text-align: center; }';
+            htmlContent += '.label h2 { font-size: 9px; margin: 0 0 5px 0; text-align: center; font-weight: bold; }';
+            htmlContent += '.label p { font-size: 7px; margin: 2px 0; text-align: left; }';
+            htmlContent += '.label .qr { text-align: center; margin: 5px 0; }';
+            htmlContent += '.label .qr canvas { width: 60px !important; height: 60px !important; }';
+            htmlContent += '@media print { body { margin: 0; padding: 10mm; } .label { page-break-inside: avoid; } }';
+            htmlContent += '</style>';
+            htmlContent += '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></scr' + 'ipt>';
+            htmlContent += '</head><body>';
+            htmlContent += '<div class="label-container">';
+            
+            // Create 2 identical labels (left and right)
+            for (let i = 0; i < 2; i++) {
+                htmlContent += '<div class="label">';
+                htmlContent += '<h3>MILIK PERPUSTAKAAN</h3>';
+                htmlContent += '<h2>' + schoolName + '</h2>';
+                htmlContent += '<p><strong>Judul:</strong> ' + currentBook.title + '</p>';
+                htmlContent += '<p><strong>Pengarang:</strong> ' + currentBook.author + '</p>';
+                htmlContent += '<p><strong>Kode:</strong> ' + currentBook.code + '</p>';
+                htmlContent += '<div class="qr" id="qr-' + i + '"></div>';
+                htmlContent += '<p style="font-family: monospace; font-size: 6px; text-align: center;">' + (currentBook.isbn || '') + '</p>';
+                htmlContent += '<p style="font-size: 6px; color: #666; text-align: center;">' + new Date().toLocaleDateString('id-ID') + '</p>';
+                htmlContent += '</div>';
+            }
+            
+            htmlContent += '</div>';
+            htmlContent += '<script>';
+            htmlContent += 'window.onload = function() {';
+            
+            const qrData = JSON.stringify({
+                code: currentBook.code,
+                title: currentBook.title,
+                author: currentBook.author,
+                isbn: currentBook.isbn
+            });
+            
+            // Generate QR for both labels
+            for (let i = 0; i < 2; i++) {
+                htmlContent += 'new QRCode(document.getElementById("qr-' + i + '"), {';
+                htmlContent += 'text: ' + JSON.stringify(qrData) + ',';
+                htmlContent += 'width: 60, height: 60 });';
+            }
+            
+            htmlContent += 'setTimeout(function() { window.print(); }, 500);';
+            htmlContent += '};';
+            htmlContent += '</scr' + 'ipt>';
+            htmlContent += '</body></html>';
+            
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            
             labelsPrinted++;
             localStorage.setItem('labelsPrinted', labelsPrinted.toString());
             updateStats();
